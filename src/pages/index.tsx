@@ -1,6 +1,8 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
+  const [hover, setHover] = useState(false);
+
   useEffect(() => {
     // Load Cal.com embed script
     const script = document.createElement("script");
@@ -13,324 +15,151 @@ export default function Home() {
     };
   }, []);
 
+  const intensity = 0.85;
+  const spread = hover ? 90 + 60*intensity : 60 + 40*intensity;
+  const blur = hover ? 110 : 80;
+
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#000000", fontFamily: "'Inter', sans-serif" }}>
-      {/* Animated background pattern */}
-      <div
-        className="fixed inset-0 opacity-10 pointer-events-none"
-        style={{
-          backgroundImage: `
-            repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px),
-            repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)
-          `,
-        }}
-      />
+    <>
+      <style jsx>{`
+        @keyframes breathe {
+          0%, 100% { filter: brightness(1); }
+          50% { filter: brightness(1.06); }
+        }
+      `}</style>
 
-      {/* Navigation */}
-      <header className="relative z-50 px-6 py-8">
-        <nav className="mx-auto max-w-7xl flex items-center justify-between">
-          <div
-            style={{
-              fontFamily: "'Manrope', sans-serif",
-              fontSize: "24px",
-              fontWeight: 700,
-              color: "#ffffff",
-              letterSpacing: "-0.03em",
-            }}
-          >
-            dberi
-          </div>
-          <div
-            className="px-4 py-2 rounded-lg"
-            style={{
-              backgroundColor: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              fontSize: "13px",
-              color: "rgba(255,255,255,0.6)",
-              letterSpacing: "0.02em",
-            }}
-          >
-            Nassau, Bahamas
-          </div>
-        </nav>
-      </header>
+      <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#0a0a0b", fontFamily: "'Inter', sans-serif" }}>
+        {/* Header */}
+        <header className="relative z-20" style={{ position: "absolute", top: 0, left: 0, right: 0, padding: "28px 40px" }}>
+          <span style={{ fontFamily: "Geist, sans-serif", fontWeight: 500, letterSpacing: "-0.01em", fontSize: 15, color: "#ffffff" }}>dberi</span>
+        </header>
 
-      {/* Hero Section */}
-      <main className="relative z-10">
-        <section className="px-6 pt-20 pb-32">
-          <div className="mx-auto max-w-5xl">
-            {/* Main headline */}
-            <div className="mb-20">
-              <h1
-                className="mb-8"
+        {/* Animated background pattern */}
+        <div
+          className="fixed inset-0 opacity-10 pointer-events-none"
+          style={{
+            backgroundImage: `
+              repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px),
+              repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)
+            `,
+          }}
+        />
+
+        {/* Main Content */}
+        <main className="relative z-10 flex-1 flex flex-col items-center justify-center text-center" style={{ minHeight: "100vh", padding: "120px 24px 80px", position: "relative" }}>
+          <div style={{ width: "100%", maxWidth: 880 }}>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 64 }}>
+              <div
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
                 style={{
-                  fontFamily: "'Manrope', sans-serif",
-                  fontWeight: 800,
-                  fontSize: "clamp(52px, 9vw, 120px)",
-                  letterSpacing: "-0.05em",
-                  lineHeight: 0.95,
-                  color: "#ffffff",
-                  textAlign: "center",
+                  position: "relative",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "16px",
+                  padding: "18px 34px",
+                  borderRadius: 999,
+                  background: "#f7f4ec",
+                  color: "#0a0a0b",
+                  fontFamily: "Geist, sans-serif",
+                  fontWeight: 500,
+                  fontSize: 15,
+                  letterSpacing: "-0.005em",
+                  boxShadow: `0 0 ${blur}px ${spread*0.35}px rgba(247,244,236,${0.22*intensity}),
+                              0 0 ${blur*2}px ${spread}px rgba(247,244,236,${0.10*intensity}),
+                              inset 0 0 0 1px rgba(255,255,255,0.6)`,
+                  transition: "box-shadow 700ms cubic-bezier(.2,.7,.2,1), transform 400ms",
+                  transform: hover ? "translateY(-1px)" : "translateY(0)",
+                  animation: "breathe 4.5s ease-in-out infinite"
                 }}
               >
-                Get set up
-                <br />
-                <span
+                <a
+                  href="mailto:ivoine@dberi.com"
                   style={{
-                    background: "linear-gradient(to right, #ffffff 0%, #888888 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
+                    color: "#0a0a0b",
+                    textDecoration: "none",
+                    cursor: "pointer",
                   }}
                 >
-                  with the Founder
-                </span>
-              </h1>
-
-              <p
-                className="mx-auto text-center mb-12"
-                style={{
-                  fontSize: "20px",
-                  lineHeight: 1.6,
-                  color: "rgba(255,255,255,0.6)",
-                  maxWidth: "700px",
-                }}
-              >
-                I'll come to you and help you get dberi running in your business.
-                <br />
-                Personal setup, training, and support—all at no cost.
-              </p>
-
-              <div className="flex justify-center">
-                <button
-                  data-cal-link="your-cal-username/dinner-onboarding"
-                  data-cal-config='{"layout":"month_view"}'
-                  className="group relative overflow-hidden transition-all duration-300 cursor-pointer"
+                  email
+                </a>
+                <span style={{ color: "rgba(10,10,11,0.3)" }}>|</span>
+                <a
+                  href="https://cal.com/ivoine"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   style={{
-                    backgroundColor: "#ffffff",
-                    color: "#000000",
-                    fontFamily: "'Manrope', sans-serif",
-                    fontWeight: 700,
-                    fontSize: "16px",
-                    padding: "20px 48px",
-                    borderRadius: "100px",
-                    border: "2px solid #ffffff",
-                    boxShadow: "0 0 40px rgba(255,255,255,0.15)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "scale(1.05)";
-                    e.currentTarget.style.boxShadow = "0 0 60px rgba(255,255,255,0.3)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "scale(1)";
-                    e.currentTarget.style.boxShadow = "0 0 40px rgba(255,255,255,0.15)";
+                    background: "none",
+                    border: "none",
+                    color: "#0a0a0b",
+                    cursor: "pointer",
+                    fontFamily: "Geist, sans-serif",
+                    fontWeight: 500,
+                    fontSize: 15,
+                    letterSpacing: "-0.005em",
+                    padding: 0,
+                    textDecoration: "none",
                   }}
                 >
-                  Book a call
-                </button>
+                  book a dinner
+                </a>
               </div>
             </div>
 
-            {/* Feature cards */}
-            <div className="grid md:grid-cols-3 gap-6 mb-32">
-              {[
-                {
-                  title: "I come to you",
-                  description: "Your business, your home, or anywhere in Nassau that works for you",
-                },
-                {
-                  title: "Complete setup",
-                  description: "Get dberi configured and running with your operations",
-                },
-                {
-                  title: "Hands-on training",
-                  description: "Learn everything you need to process payments confidently",
-                },
-              ].map((feature, i) => (
-                <div
-                  key={i}
-                  className="group relative p-6 rounded-2xl transition-all duration-300"
-                  style={{
-                    backgroundColor: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.06)";
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.03)";
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
-                  }}
-                >
-                  <h3
-                    className="mb-3"
-                    style={{
-                      fontFamily: "'Manrope', sans-serif",
-                      fontSize: "20px",
-                      fontWeight: 700,
-                      color: "#ffffff",
-                      letterSpacing: "-0.02em",
-                    }}
-                  >
-                    {feature.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: "15px",
-                      lineHeight: 1.6,
-                      color: "rgba(255,255,255,0.5)",
-                    }}
-                  >
-                    {feature.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {/* Large quote section */}
-            <div
-              className="relative p-12 rounded-3xl mb-32"
+            <h1
               style={{
-                backgroundColor: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.06)",
+                fontFamily: "'Instrument Serif', serif",
+                fontWeight: 400,
+                fontSize: "clamp(40px, 6.2vw, 84px)",
+                lineHeight: 1.02,
+                letterSpacing: "-0.02em",
+                margin: "0 0 28px",
+                color: "#ffffff",
               }}
             >
-              <div
-                className="absolute top-8 left-12 opacity-20"
-                style={{
-                  fontSize: "120px",
-                  fontFamily: "'Manrope', sans-serif",
-                  fontWeight: 900,
-                  color: "#ffffff",
-                  lineHeight: 1,
-                }}
-              >
-                "
-              </div>
-              <div className="relative z-10 max-w-3xl mx-auto text-center pt-8">
-                <p
-                  className="mb-8"
-                  style={{
-                    fontFamily: "'Manrope', sans-serif",
-                    fontSize: "clamp(24px, 3vw, 36px)",
-                    fontWeight: 600,
-                    lineHeight: 1.4,
-                    color: "#ffffff",
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  Modern financial infrastructure for the Bahamas
-                </p>
-                <p
-                  style={{
-                    fontSize: "17px",
-                    lineHeight: 1.7,
-                    color: "rgba(255,255,255,0.6)",
-                  }}
-                >
-                  A payment system designed for everyone—from street vendors to enterprise retailers.
-                  Built on institutional-grade technology with double-entry ledger accounting, real-time analytics,
-                  and seamless payment methods crafted for the Bahamian market.
-                </p>
-              </div>
-            </div>
+              Modern financial infrastructure
+              <br />
+              for the <em style={{ fontStyle: "italic", color: "#e9d9b6" }}>Caribbean</em>.
+            </h1>
 
-            {/* Stats/Info Grid */}
-            <div className="grid md:grid-cols-2 gap-6 mb-32">
-              <div
-                className="p-8 rounded-2xl"
-                style={{
-                  backgroundColor: "#ffffff",
-                  color: "#000000",
-                }}
-              >
-                <div
-                  className="mb-4"
-                  style={{
-                    fontSize: "56px",
-                    fontFamily: "'Manrope', sans-serif",
-                    fontWeight: 900,
-                    lineHeight: 1,
-                    letterSpacing: "-0.04em",
-                  }}
-                >
-                  Free
-                </div>
-                <p
-                  style={{
-                    fontSize: "15px",
-                    lineHeight: 1.6,
-                    color: "rgba(0,0,0,0.7)",
-                  }}
-                >
-                  Personal onboarding at no cost. I want to make sure you succeed with dberi.
-                </p>
-              </div>
+            <p
+              style={{
+                margin: "0 auto",
+                maxWidth: 560,
+                color: "rgba(255,255,255,0.5)",
+                fontSize: 16,
+                lineHeight: 1.55,
+              }}
+            >
+              Payment rails for the Caribbean. Locals and tourists pay merchants, and send money to each other, instantly.
+            </p>
 
-              <div
-                className="p-8 rounded-2xl"
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
-              >
-                <div
-                  className="mb-4"
-                  style={{
-                    fontSize: "56px",
-                    fontFamily: "'Manrope', sans-serif",
-                    fontWeight: 900,
-                    lineHeight: 1,
-                    color: "#ffffff",
-                    letterSpacing: "-0.04em",
-                  }}
-                >
-                  1:1
-                </div>
-                <p
-                  style={{
-                    fontSize: "15px",
-                    lineHeight: 1.6,
-                    color: "rgba(255,255,255,0.6)",
-                  }}
-                >
-                  Dedicated time with the founder. Just you, me, and getting your business set up right.
-                </p>
-              </div>
-            </div>
-
-            {/* Final CTA */}
-            <div className="text-center">
-              <div
-                className="inline-block mb-6 px-4 py-2 rounded-full"
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.08)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
-              >
-                <p
-                  style={{
-                    fontSize: "13px",
-                    color: "rgba(255,255,255,0.5)",
-                    letterSpacing: "0.05em",
-                  }}
-                >
-                  Available throughout Nassau
-                </p>
-              </div>
-              <p
-                style={{
-                  fontSize: "15px",
-                  color: "rgba(255,255,255,0.4)",
-                }}
-              >
-                Let's build the future of Bahamian commerce together
-              </p>
+            <div
+              style={{
+                marginTop: 64,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 32,
+                color: "rgba(255,255,255,0.4)",
+                fontSize: 12,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                flexWrap: "wrap",
+              }}
+            >
+              <span>Built for</span>
+              <span style={{ color: "rgba(255,255,255,0.6)" }}>Locals</span>
+              <span style={{ width: 3, height: 3, background: "rgba(255,255,255,0.4)", borderRadius: "50%", display: "inline-block", opacity: 0.5 }} />
+              <span style={{ color: "rgba(255,255,255,0.6)" }}>Tourists</span>
+              <span style={{ width: 3, height: 3, background: "rgba(255,255,255,0.4)", borderRadius: "50%", display: "inline-block", opacity: 0.5 }} />
+              <span style={{ color: "rgba(255,255,255,0.6)" }}>Merchants</span>
+              <span style={{ width: 3, height: 3, background: "rgba(255,255,255,0.4)", borderRadius: "50%", display: "inline-block", opacity: 0.5 }} />
+              <span style={{ color: "rgba(255,255,255,0.6)" }}>Person&#8209;to&#8209;person</span>
             </div>
           </div>
-        </section>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
