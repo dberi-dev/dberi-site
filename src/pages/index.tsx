@@ -30,8 +30,57 @@ export default function Home() {
 
       <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#0a0a0b", fontFamily: "'Inter', sans-serif" }}>
         {/* Header */}
-        <header className="relative z-20" style={{ position: "absolute", top: 0, left: 0, right: 0, padding: "28px 40px" }}>
+        <header className="relative z-20" style={{ position: "absolute", top: 0, left: 0, right: 0, padding: "28px 40px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span style={{ fontFamily: "Geist, sans-serif", fontWeight: 500, letterSpacing: "-0.01em", fontSize: 15, color: "#ffffff" }}>dberi</span>
+          <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
+            <a
+              href="https://docs.dberi.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontFamily: "Geist, sans-serif",
+                fontWeight: 500,
+                fontSize: 14,
+                letterSpacing: "-0.005em",
+                color: "rgba(255,255,255,0.7)",
+                textDecoration: "none",
+                transition: "color 200ms",
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = "#ffffff"}
+              onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255,255,255,0.7)"}
+            >
+              docs
+            </a>
+            <a
+              href="https://dashboard.dberi.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontFamily: "Geist, sans-serif",
+                fontWeight: 500,
+                fontSize: 14,
+                letterSpacing: "-0.005em",
+                padding: "10px 20px",
+                borderRadius: 999,
+                background: "rgba(255,255,255,0.1)",
+                color: "#ffffff",
+                textDecoration: "none",
+                transition: "background 200ms, transform 200ms",
+                border: "1px solid rgba(255,255,255,0.1)",
+                transform: "scale(1)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.15)";
+                e.currentTarget.style.transform = "scale(1.05)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+                e.currentTarget.style.transform = "scale(1)";
+              }}
+            >
+              give it a try
+            </a>
+          </div>
         </header>
 
         {/* Animated background pattern */}
