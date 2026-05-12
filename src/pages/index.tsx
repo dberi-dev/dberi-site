@@ -184,6 +184,7 @@ export default function Home() {
             </p>
 
             <div
+              className="mobile-hide"
               style={{
                 marginTop: 64,
                 display: "flex",

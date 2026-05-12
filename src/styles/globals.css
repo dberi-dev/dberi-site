@@ -119,3 +119,10 @@ body {
   border-radius: inherit;
   pointer-events: none;
 }
+
+/* Mobile responsive utility */
+@media (max-width: 1024px) {
+  .mobile-hide {
+    display: none !important;
+  }
+}
