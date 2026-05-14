@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAMID.com.example.dberi-ios",
+        "paths": [
+          "/pay/*",
+          "/claim/*"
+        ]
+      }
+    ]
+  }
+}
