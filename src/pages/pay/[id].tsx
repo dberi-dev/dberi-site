@@ -329,7 +329,7 @@ export default function PaymentLinkPage() {
           {/* Status Badge */}
           <div
             style={{
-              display: "inline-flex",
+              display: "flex",
               padding: "8px 20px",
               background: getStatusColor(paymentLink.status),
               color: "#ffffff",
@@ -337,7 +337,6 @@ export default function PaymentLinkPage() {
               fontWeight: 600,
               borderRadius: 999,
               margin: "0 auto 32px",
-              display: "flex",
               justifyContent: "center",
               letterSpacing: "0.05em",
             }}
