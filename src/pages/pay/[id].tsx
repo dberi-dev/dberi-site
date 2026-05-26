@@ -2,8 +2,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements, CardElement, PaymentRequestButtonElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { FaApple, FaGoogle } from "react-icons/fa";
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -29,72 +28,6 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
   const [processing, setProcessing] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
-  const [paymentRequest, setPaymentRequest] = useState<any>(null);
-
-  useEffect(() => {
-    if (!stripe) return;
-
-    const pr = stripe.paymentRequest({
-      country: 'BS', // Bahamas
-      currency: 'usd',
-      total: {
-        label: paymentLink.description || 'Payment',
-        amount: paymentLink.amount,
-      },
-      requestPayerName: true,
-      requestPayerEmail: true,
-      requestPayerPhone: true,
-    });
-
-    pr.canMakePayment().then(result => {
-      if (result) {
-        setPaymentRequest(pr);
-      }
-    });
-
-    pr.on('paymentmethod', async (ev) => {
-      setProcessing(true);
-      setError(null);
-
-      try {
-        const response = await fetch(`https://api.dberi.com/v1/payment-links/${paymentLink.id}/pay-web`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            payment_method_id: ev.paymentMethod.id,
-            phone_number: ev.payerPhone || '',
-            email: ev.payerEmail || null,
-          }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Payment failed');
-        }
-
-        const data = await response.json();
-
-        if (data.requires_action && data.client_secret) {
-          const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
-          if (confirmError) {
-            ev.complete('fail');
-            setError(confirmError.message || "Payment confirmation failed");
-            setProcessing(false);
-            return;
-          }
-        }
-
-        ev.complete('success');
-        onSuccess();
-      } catch (err) {
-        ev.complete('fail');
-        setError(err instanceof Error ? err.message : "Payment failed");
-        setProcessing(false);
-      }
-    });
-  }, [stripe, paymentLink]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -778,98 +711,23 @@ export default function PaymentLinkPage() {
               </div>
 
               {isPending && (
-                <div>
-                  <p
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 500,
-                      color: "rgba(255,255,255,0.7)",
-                      marginBottom: 16,
-                      textAlign: "left",
-                    }}
-                  >
-                    Choose one of the payment options
-                  </p>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 12,
-                    }}
-                  >
-                    {platform === 'ios' && (
-                      <button
-                        onClick={() => setShowWebPayment(true)}
-                        style={{
-                          width: "100%",
-                          padding: "18px 24px",
-                          background: "#000000",
-                          color: "#ffffff",
-                          fontSize: 18,
-                          fontWeight: 600,
-                          borderRadius: 12,
-                          border: "none",
-                          cursor: "pointer",
-                          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: 8,
-                        }}
-                      >
-                        <FaApple size={24} />
-                        <span>Pay</span>
-                      </button>
-                    )}
-
-                    {platform === 'android' && (
-                      <button
-                        onClick={() => setShowWebPayment(true)}
-                        style={{
-                          width: "100%",
-                          padding: "18px 24px",
-                          background: "#ffffff",
-                          color: "#000000",
-                          fontSize: 18,
-                          fontWeight: 600,
-                          borderRadius: 12,
-                          border: "1px solid rgba(0,0,0,0.1)",
-                          cursor: "pointer",
-                          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: 8,
-                        }}
-                      >
-                        <FaGoogle size={24} style={{ color: "#4285F4" }} />
-                        <span>Pay</span>
-                      </button>
-                    )}
-
-                    <button
-                      onClick={() => setShowWebPayment(true)}
-                      style={{
-                        width: "100%",
-                        padding: "18px 24px",
-                        background: "rgba(255,255,255,0.95)",
-                        color: "#000000",
-                        fontSize: 16,
-                        fontWeight: 500,
-                        borderRadius: 12,
-                        border: "1px solid rgba(0,0,0,0.1)",
-                        cursor: "pointer",
-                        fontFamily: "Geist, sans-serif",
-                        textAlign: "left",
-                      }}
-                    >
-                      <div style={{ fontWeight: 600, marginBottom: 4 }}>Pay by card</div>
-                      <div style={{ fontSize: 13, color: "rgba(0,0,0,0.6)" }}>
-                        To pay, please enter your VISA, MasterCard or Maestro payment card information.
-                      </div>
-                    </button>
-                  </div>
-                </div>
+                <button
+                  onClick={() => setShowWebPayment(true)}
+                  style={{
+                    width: "100%",
+                    padding: "16px 24px",
+                    background: "#ffffff",
+                    color: "#000000",
+                    fontSize: 16,
+                    fontWeight: 600,
+                    borderRadius: 12,
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "Geist, sans-serif",
+                  }}
+                >
+                  Pay with card
+                </button>
               )}
 
               {isExpired && (
