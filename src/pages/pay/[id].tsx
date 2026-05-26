@@ -386,6 +386,7 @@ export default function PaymentLinkPage() {
 
     const fetchPaymentLink = async () => {
       try {
+        console.log('Fetching payment link:', id);
         const response = await fetch(`https://api.dberi.com/v1/payment-links/${id}`);
         if (!response.ok) {
           throw new Error("Payment link not found");
