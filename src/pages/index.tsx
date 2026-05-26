@@ -635,14 +635,10 @@ export default function DberiLanding() {
               <div className="mbig">
                 <div className="copy">
                   <h3>Take payments anywhere.</h3>
-                  <p>Stand at the counter, walk the floor, or sell at the market. Customers tap, scan, or enter your @handle — you see the sale on your phone in seconds.</p>
+                  <p>Stand at the counter, walk the floor, or sell at the market. Customers scan or enter your @handle — you see the sale on your phone in seconds.</p>
                 </div>
 
                 <div className="scene">
-                  <div className="chip-f c1">
-                    <span className="ic"><svg viewBox="0 0 16 16" fill="none"><path d="M4 6c1.5-2 4.5-2 6 0M2.5 4c2.5-3 8-3 11 0M6 8c.7-1 2.7-1 3.5 0M7 11.5h2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg></span>
-                    Tap to pay
-                  </div>
                   <div className="chip-f c2">
                     <span className="ic"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3"/><rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3"/><path d="M9 9h2v2H9zM13 9h1M9 13h2M13 11v3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg></span>
                     Scan QR
@@ -654,7 +650,6 @@ export default function DberiLanding() {
 
                   <div className="conn">
                     <svg viewBox="0 0 400 340" preserveAspectRatio="none" fill="none">
-                      <path d="M70 60 C130 90, 170 100, 200 140" stroke="rgba(255,255,255,.18)" strokeWidth="1" strokeDasharray="2 4"/>
                       <path d="M340 160 C290 170, 250 165, 220 170" stroke="rgba(255,255,255,.18)" strokeWidth="1" strokeDasharray="2 4"/>
                       <path d="M80 280 C130 270, 170 260, 200 240" stroke="rgba(255,255,255,.18)" strokeWidth="1" strokeDasharray="2 4"/>
                     </svg>
