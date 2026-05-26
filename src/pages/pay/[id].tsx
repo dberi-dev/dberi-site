@@ -106,7 +106,7 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Payment failed');
+        throw new Error(errorData.error || errorData.message || 'Payment failed');
       }
 
       const data = await response.json();
