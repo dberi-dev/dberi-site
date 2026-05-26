@@ -241,16 +241,6 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
         {processing ? "Processing..." : `Pay $${(paymentLink.amount / 100).toFixed(2)}`}
       </button>
 
-      <p
-        style={{
-          fontSize: 12,
-          color: "rgba(255,255,255,0.4)",
-          textAlign: "center",
-          marginTop: 16,
-        }}
-      >
-        Secured by Stripe. Your card details are encrypted and never stored on our servers.
-      </p>
     </form>
   );
 }
