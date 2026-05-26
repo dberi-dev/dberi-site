@@ -100,36 +100,6 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
 
   return (
     <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-      {paymentRequest && (
-        <>
-          <div style={{ marginBottom: 24 }}>
-            <PaymentRequestButtonElement
-              options={{
-                paymentRequest,
-                style: {
-                  paymentRequestButton: {
-                    type: 'default',
-                    theme: 'light',
-                    height: '48px',
-                  },
-                },
-              }}
-            />
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginBottom: 24,
-              gap: 12,
-            }}
-          >
-            <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.1)" }} />
-            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>or pay with card</span>
-            <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.1)" }} />
-          </div>
-        </>
-      )}
       <div style={{ marginBottom: 20 }}>
         <label
           htmlFor="phone"
