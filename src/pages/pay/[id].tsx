@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { Elements, CardElement, PaymentRequestButtonElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -28,6 +28,72 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
   const [processing, setProcessing] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
+  const [paymentRequest, setPaymentRequest] = useState<any>(null);
+
+  useEffect(() => {
+    if (!stripe) return;
+
+    const pr = stripe.paymentRequest({
+      country: 'BS', // Bahamas
+      currency: 'usd',
+      total: {
+        label: paymentLink.description || 'Payment',
+        amount: paymentLink.amount,
+      },
+      requestPayerName: true,
+      requestPayerEmail: true,
+      requestPayerPhone: true,
+    });
+
+    pr.canMakePayment().then(result => {
+      if (result) {
+        setPaymentRequest(pr);
+      }
+    });
+
+    pr.on('paymentmethod', async (ev) => {
+      setProcessing(true);
+      setError(null);
+
+      try {
+        const response = await fetch(`https://api.dberi.com/v1/payment-links/${paymentLink.id}/pay-web`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            payment_method_id: ev.paymentMethod.id,
+            phone_number: ev.payerPhone || '',
+            email: ev.payerEmail || null,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Payment failed');
+        }
+
+        const data = await response.json();
+
+        if (data.requires_action && data.client_secret) {
+          const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
+          if (confirmError) {
+            ev.complete('fail');
+            setError(confirmError.message || "Payment confirmation failed");
+            setProcessing(false);
+            return;
+          }
+        }
+
+        ev.complete('success');
+        onSuccess();
+      } catch (err) {
+        ev.complete('fail');
+        setError(err instanceof Error ? err.message : "Payment failed");
+        setProcessing(false);
+      }
+    });
+  }, [stripe, paymentLink]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -100,6 +166,36 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
 
   return (
     <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+      {paymentRequest && (
+        <>
+          <div style={{ marginBottom: 24 }}>
+            <PaymentRequestButtonElement
+              options={{
+                paymentRequest,
+                style: {
+                  paymentRequestButton: {
+                    type: 'default',
+                    theme: 'light',
+                    height: '48px',
+                  },
+                },
+              }}
+            />
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: 24,
+              gap: 12,
+            }}
+          >
+            <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.1)" }} />
+            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>or pay with card</span>
+            <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.1)" }} />
+          </div>
+        </>
+      )}
       <div style={{ marginBottom: 20 }}>
         <label
           htmlFor="phone"
