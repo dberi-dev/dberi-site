@@ -632,20 +632,19 @@ export default function PaymentLinkPage() {
             }}
           >
             <div style={{ fontSize: 64, marginBottom: 24 }}>✅</div>
-            {paymentLink.merchant_name && (
-              <p
-                style={{
-                  fontSize: 14,
-                  color: "rgba(255,255,255,0.5)",
-                  textAlign: "center",
-                  marginBottom: 16,
-                  fontWeight: 500,
-                  letterSpacing: "0.02em",
-                }}
-              >
-                {paymentLink.merchant_name}
-              </p>
-            )}
+            <p
+              style={{
+                fontSize: 14,
+                color: "rgba(255,255,255,0.5)",
+                textAlign: "center",
+                marginBottom: 16,
+                fontWeight: 500,
+                letterSpacing: "0.02em",
+                textTransform: "uppercase",
+              }}
+            >
+              {paymentLink.merchant_name || "dberi"}
+            </p>
             <h1
               style={{
                 fontFamily: "Geist, sans-serif",
@@ -775,20 +774,19 @@ export default function PaymentLinkPage() {
                 💰
               </div>
 
-              {paymentLink.merchant_name && (
-                <p
-                  style={{
-                    fontSize: 14,
-                    color: "rgba(255,255,255,0.5)",
-                    textAlign: "center",
-                    marginBottom: 16,
-                    fontWeight: 500,
-                    letterSpacing: "0.02em",
-                  }}
-                >
-                  {paymentLink.merchant_name}
-                </p>
-              )}
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "rgba(255,255,255,0.5)",
+                  textAlign: "center",
+                  marginBottom: 16,
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {paymentLink.merchant_name || "dberi"}
+              </p>
 
               <h1
                 style={{
@@ -907,20 +905,19 @@ export default function PaymentLinkPage() {
                 ← Back
               </button>
 
-              {paymentLink.merchant_name && (
-                <p
-                  style={{
-                    fontSize: 14,
-                    color: "rgba(255,255,255,0.5)",
-                    textAlign: "center",
-                    marginBottom: 12,
-                    fontWeight: 500,
-                    letterSpacing: "0.02em",
-                  }}
-                >
-                  {paymentLink.merchant_name}
-                </p>
-              )}
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "rgba(255,255,255,0.5)",
+                  textAlign: "center",
+                  marginBottom: 12,
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {paymentLink.merchant_name || "dberi"}
+              </p>
 
               <h1
                 style={{
