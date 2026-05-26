@@ -560,9 +560,9 @@ export default function PaymentLinkPage() {
           <div style={{ fontSize: 48, marginBottom: 16 }}>⚠️</div>
           <h1
             style={{
-              fontFamily: "'Instrument Serif', serif",
+              fontFamily: "Geist, sans-serif",
               fontSize: 32,
-              fontWeight: 400,
+              fontWeight: 600,
               color: "#ffffff",
               marginBottom: 12,
             }}
@@ -632,11 +632,25 @@ export default function PaymentLinkPage() {
             }}
           >
             <div style={{ fontSize: 64, marginBottom: 24 }}>✅</div>
+            {paymentLink.merchant_name && (
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "rgba(255,255,255,0.5)",
+                  textAlign: "center",
+                  marginBottom: 16,
+                  fontWeight: 500,
+                  letterSpacing: "0.02em",
+                }}
+              >
+                {paymentLink.merchant_name}
+              </p>
+            )}
             <h1
               style={{
-                fontFamily: "'Instrument Serif', serif",
+                fontFamily: "Geist, sans-serif",
                 fontSize: 32,
-                fontWeight: 400,
+                fontWeight: 600,
                 color: "#ffffff",
                 marginBottom: 16,
               }}
@@ -687,12 +701,6 @@ export default function PaymentLinkPage() {
             paymentLink.description ||
             `Payment request for ${formatAmount(paymentLink.amount)}`
           }
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"
-          rel="stylesheet"
         />
       </Head>
 
@@ -784,9 +792,9 @@ export default function PaymentLinkPage() {
 
               <h1
                 style={{
-                  fontFamily: "'Instrument Serif', serif",
+                  fontFamily: "Geist, sans-serif",
                   fontSize: 28,
-                  fontWeight: 400,
+                  fontWeight: 600,
                   color: "#ffffff",
                   textAlign: "center",
                   marginBottom: 8,
@@ -916,9 +924,9 @@ export default function PaymentLinkPage() {
 
               <h1
                 style={{
-                  fontFamily: "'Instrument Serif', serif",
+                  fontFamily: "Geist, sans-serif",
                   fontSize: 24,
-                  fontWeight: 400,
+                  fontWeight: 600,
                   color: "#ffffff",
                   textAlign: "center",
                   marginBottom: 8,
