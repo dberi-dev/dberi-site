@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Head from "next/head";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { loadStripe, PaymentRequest, PaymentRequestPaymentMethodEvent } from "@stripe/stripe-js";
+import { Elements, CardElement, PaymentRequestButtonElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -28,6 +28,8 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
   const [processing, setProcessing] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
+  const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
+  const [canMakePayment, setCanMakePayment] = useState(false);
 
   const formatPhoneNumber = (value: string) => {
     // Remove all non-digits
@@ -55,6 +57,73 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
     // Extract just the digits for API submission
     return formatted.replace(/\D/g, '');
   };
+
+  useEffect(() => {
+    if (!stripe) return;
+
+    const pr = stripe.paymentRequest({
+      country: 'US',
+      currency: paymentLink.currency.toLowerCase(),
+      total: {
+        label: paymentLink.description || 'Payment',
+        amount: paymentLink.amount,
+      },
+      requestPayerName: false,
+      requestPayerEmail: false,
+      requestPayerPhone: false,
+    });
+
+    pr.canMakePayment().then((result) => {
+      if (result) {
+        setPaymentRequest(pr);
+        setCanMakePayment(true);
+      }
+    });
+
+    pr.on('paymentmethod', async (ev: PaymentRequestPaymentMethodEvent) => {
+      setProcessing(true);
+      setError(null);
+
+      try {
+        // Process payment with the payment method from Apple/Google Pay
+        const response = await fetch(`https://api.dberi.com/v1/payment-links/${paymentLink.id}/pay-web`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            payment_method_id: ev.paymentMethod.id,
+            phone_number: ev.payerPhone || '',
+            email: ev.payerEmail || null,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || errorData.message || 'Payment failed');
+        }
+
+        const data = await response.json();
+
+        if (data.requires_action && data.client_secret) {
+          const { error: confirmError } = await stripe.confirmCardPayment(data.client_secret);
+          if (confirmError) {
+            ev.complete('fail');
+            setError(confirmError.message || "Payment confirmation failed");
+            setProcessing(false);
+            return;
+          }
+        }
+
+        ev.complete('success');
+        onSuccess();
+      } catch (err) {
+        ev.complete('fail');
+        setError(err instanceof Error ? err.message : "Payment failed");
+        setProcessing(false);
+      }
+    });
+  }, [stripe, paymentLink]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -130,6 +199,58 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
 
   return (
     <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+      {canMakePayment && paymentRequest && (
+        <>
+          <div style={{ marginBottom: 24 }}>
+            <PaymentRequestButtonElement
+              options={{
+                paymentRequest,
+                style: {
+                  paymentRequestButton: {
+                    type: 'default',
+                    theme: 'dark',
+                    height: '48px',
+                  },
+                },
+              }}
+            />
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              marginBottom: 24,
+            }}
+          >
+            <div
+              style={{
+                flex: 1,
+                height: 1,
+                background: "rgba(255,255,255,0.1)",
+              }}
+            />
+            <span
+              style={{
+                fontSize: 13,
+                color: "rgba(255,255,255,0.4)",
+                fontFamily: "Geist, sans-serif",
+              }}
+            >
+              or pay with card
+            </span>
+            <div
+              style={{
+                flex: 1,
+                height: 1,
+                background: "rgba(255,255,255,0.1)",
+              }}
+            />
+          </div>
+        </>
+      )}
+
       <div style={{ marginBottom: 20 }}>
         <label
           htmlFor="phone"
