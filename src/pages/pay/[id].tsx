@@ -29,6 +29,25 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
 
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-digits
+    const digits = value.replace(/\D/g, '');
+
+    // Format as we type
+    if (digits.length === 0) return '';
+    if (digits.length <= 1) return `+${digits}`;
+    if (digits.length <= 4) return `+${digits.slice(0, 1)} (${digits.slice(1)}`;
+    if (digits.length <= 7) return `+${digits.slice(0, 1)} (${digits.slice(1, 4)}) ${digits.slice(4)}`;
+    if (digits.length <= 11) return `+${digits.slice(0, 1)} (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
+    // Limit to 11 digits (+1 + 10 digits)
+    return `+${digits.slice(0, 1)} (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7, 11)}`;
+  };
+
+  const getDigitsOnly = (formatted: string) => {
+    // Extract just the digits for API submission
+    return formatted.replace(/\D/g, '');
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -45,12 +64,15 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
     setError(null);
 
     try {
+      const digitsOnly = getDigitsOnly(phoneNumber);
+      const formattedPhone = `+${digitsOnly}`;
+
       // Create payment method
       const { error: pmError, paymentMethod } = await stripe.createPaymentMethod({
         type: 'card',
         card: cardElement,
         billing_details: {
-          phone: phoneNumber,
+          phone: formattedPhone,
           email: email || undefined,
         },
       });
@@ -69,7 +91,7 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
         },
         body: JSON.stringify({
           payment_method_id: paymentMethod.id,
-          phone_number: phoneNumber,
+          phone_number: formattedPhone,
           email: email || null,
         }),
       });
@@ -117,7 +139,7 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
           id="phone"
           type="tel"
           value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
+          onChange={(e) => setPhoneNumber(formatPhoneNumber(e.target.value))}
           placeholder="+1 (242) 555-0123"
           required
           style={{
