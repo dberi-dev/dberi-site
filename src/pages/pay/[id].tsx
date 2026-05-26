@@ -799,7 +799,7 @@ export default function PaymentLinkPage() {
                   >
                     {platform === 'ios' && (
                       <button
-                        onClick={handleOpenInApp}
+                        onClick={() => setShowWebPayment(true)}
                         style={{
                           width: "100%",
                           padding: "18px 24px",
