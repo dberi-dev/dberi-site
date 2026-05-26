@@ -777,92 +777,97 @@ export default function PaymentLinkPage() {
               </div>
 
               {isPending && (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 12,
-                  }}
-                >
-                  {platform === 'ios' && (
-                    <button
-                      onClick={handleOpenInApp}
-                      style={{
-                        width: "100%",
-                        padding: "16px 24px",
-                        background: "#ffffff",
-                        color: "#0a0a0b",
-                        fontSize: 16,
-                        fontWeight: 600,
-                        borderRadius: 12,
-                        border: "none",
-                        cursor: "pointer",
-                        fontFamily: "Geist, sans-serif",
-                      }}
-                    >
-                      Open in dberi App
-                    </button>
-                  )}
-
-                  <button
-                    onClick={() => setShowWebPayment(true)}
+                <div>
+                  <p
                     style={{
-                      width: "100%",
-                      padding: "16px 24px",
-                      background: platform === 'ios' ? "rgba(255,255,255,0.1)" : "#ffffff",
-                      color: platform === 'ios' ? "#ffffff" : "#0a0a0b",
-                      fontSize: platform === 'ios' ? 15 : 16,
-                      fontWeight: platform === 'ios' ? 500 : 600,
-                      borderRadius: 12,
-                      border: platform === 'ios' ? "1px solid rgba(255,255,255,0.1)" : "none",
-                      cursor: "pointer",
-                      fontFamily: "Geist, sans-serif",
+                      fontSize: 16,
+                      fontWeight: 500,
+                      color: "rgba(255,255,255,0.7)",
+                      marginBottom: 16,
+                      textAlign: "left",
                     }}
                   >
-                    Pay with Card
-                  </button>
+                    Choose one of the payment options
+                  </p>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 12,
+                    }}
+                  >
+                    {platform === 'ios' && (
+                      <button
+                        onClick={handleOpenInApp}
+                        style={{
+                          width: "100%",
+                          padding: "18px 24px",
+                          background: "#ffffff",
+                          color: "#000000",
+                          fontSize: 18,
+                          fontWeight: 600,
+                          borderRadius: 12,
+                          border: "1px solid rgba(0,0,0,0.1)",
+                          cursor: "pointer",
+                          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
+                        }}
+                      >
+                        <span style={{ fontSize: 24 }}>􀣺</span>
+                        Pay
+                      </button>
+                    )}
 
-                  {getAppStoreUrl() ? (
-                    <a
-                      href={getAppStoreUrl()!}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    {platform === 'android' && (
+                      <button
+                        onClick={() => setShowWebPayment(true)}
+                        style={{
+                          width: "100%",
+                          padding: "18px 24px",
+                          background: "#ffffff",
+                          color: "#000000",
+                          fontSize: 18,
+                          fontWeight: 600,
+                          borderRadius: 12,
+                          border: "1px solid rgba(0,0,0,0.1)",
+                          cursor: "pointer",
+                          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
+                        }}
+                      >
+                        <span style={{ fontSize: 20, fontWeight: 700, color: "#4285F4" }}>G</span>
+                        <span style={{ fontSize: 20, fontWeight: 400 }}>Pay</span>
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => setShowWebPayment(true)}
                       style={{
                         width: "100%",
-                        padding: "16px 24px",
-                        background: "transparent",
-                        color: "rgba(255,255,255,0.6)",
-                        fontSize: 14,
+                        padding: "18px 24px",
+                        background: "rgba(255,255,255,0.95)",
+                        color: "#000000",
+                        fontSize: 16,
                         fontWeight: 500,
                         borderRadius: 12,
-                        border: "1px solid rgba(255,255,255,0.05)",
+                        border: "1px solid rgba(0,0,0,0.1)",
                         cursor: "pointer",
                         fontFamily: "Geist, sans-serif",
-                        textDecoration: "none",
-                        display: "block",
-                        textAlign: "center",
+                        textAlign: "left",
                       }}
                     >
-                      {getDownloadButtonText()}
-                    </a>
-                  ) : (
-                    <div
-                      style={{
-                        width: "100%",
-                        padding: "16px 24px",
-                        background: "transparent",
-                        color: "rgba(255,255,255,0.4)",
-                        fontSize: 14,
-                        fontWeight: 500,
-                        borderRadius: 12,
-                        border: "1px solid rgba(255,255,255,0.05)",
-                        fontFamily: "Geist, sans-serif",
-                        textAlign: "center",
-                      }}
-                    >
-                      {getDownloadButtonText()}
-                    </div>
-                  )}
+                      <div style={{ fontWeight: 600, marginBottom: 4 }}>Pay by card</div>
+                      <div style={{ fontSize: 13, color: "rgba(0,0,0,0.6)" }}>
+                        To pay, please enter your VISA, MasterCard or Maestro payment card information.
+                      </div>
+                    </button>
+                  </div>
                 </div>
               )}
 
