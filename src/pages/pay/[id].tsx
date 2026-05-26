@@ -33,24 +33,22 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
     // Remove all non-digits
     let digits = value.replace(/\D/g, '');
 
-    // If starts with 1 and has 11 digits, use as-is
-    // If has 10 digits, prepend 1
-    // Otherwise use as-is
-    if (digits.length === 10) {
+    // Always prepend 1 if not present and limit to 11 digits total
+    if (digits.length > 0 && digits[0] !== '1') {
       digits = '1' + digits;
-    } else if (digits.length > 11) {
-      // Limit to 11 digits
+    }
+
+    // Limit to 11 digits total
+    if (digits.length > 11) {
       digits = digits.slice(0, 11);
     }
 
-    // Format as we type - always assume US +1
+    // Format: +1 (242) 425-1480
     if (digits.length === 0) return '';
     if (digits.length === 1) return `+${digits}`;
     if (digits.length <= 4) return `+1 (${digits.slice(1)}`;
     if (digits.length <= 7) return `+1 (${digits.slice(1, 4)}) ${digits.slice(4)}`;
-    if (digits.length <= 11) return `+1 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
-
-    return `+1 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7, 11)}`;
+    return `+1 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
   };
 
   const getDigitsOnly = (formatted: string) => {
