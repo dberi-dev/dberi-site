@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, PaymentRequestButtonElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { FaApple, FaGooglePay } from "react-icons/fa";
+import { FaApple, FaGoogle } from "react-icons/fa";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -842,7 +842,8 @@ export default function PaymentLinkPage() {
                           gap: 8,
                         }}
                       >
-                        <FaGooglePay size={36} />
+                        <FaGoogle size={24} style={{ color: "#4285F4" }} />
+                        <span>Pay</span>
                       </button>
                     )}
 
