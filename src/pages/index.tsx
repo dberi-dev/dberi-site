@@ -246,16 +246,16 @@ const css = `
   .ph-hdr .bell{width:22px;height:22px;border-radius:50%;background:rgba(10,10,11,.05);display:flex;align-items:center;justify-content:center;color:rgba(10,10,11,.6)}
 
   .ph-check{
-    width:120px;height:120px;border-radius:50%;background:#16a34a;color:#fff;
+    width:85px;height:85px;border-radius:50%;background:#16a34a;color:#fff;
     display:flex;align-items:center;justify-content:center;
-    box-shadow:0 0 0 16px rgba(22,163,74,.12);
+    box-shadow:0 0 0 14px rgba(22,163,74,.12);
     position:relative;
   }
   .ph-check svg{
-    width:48px;height:48px;
+    width:34px;height:34px;
   }
-  .ph-amt{text-align:center;font-size:64px;font-weight:700;letter-spacing:-0.04em;color:#0a0a0b;line-height:1}
-  .ph-amt .cur{font-size:20px;color:#9ca3af;font-weight:500;margin-right:2px;vertical-align:14px}
+  .ph-amt{text-align:center;font-size:48px;font-weight:700;letter-spacing:-0.04em;color:#0a0a0b;line-height:1}
+  .ph-amt .cur{font-size:16px;color:#9ca3af;font-weight:500;margin-right:2px;vertical-align:10px}
   .ph-sub{text-align:center;font-size:14px;color:#16a34a;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-top:4px}
 
   .ph-cust{
@@ -459,7 +459,7 @@ const css = `
   }
 `;
 
-export default function DberiLanding(): JSX.Element {
+export default function DberiLanding() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: css }} />
@@ -668,7 +668,7 @@ export default function DberiLanding(): JSX.Element {
                         <div className="ph-check">
                           <svg viewBox="0 0 24 24" fill="none"><path d="M6 12.5L10.5 17L18 8" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
                         </div>
-                        <div className="ph-amt"><span className="cur">BSD $</span>42.50</div>
+                        <div className="ph-amt"><span className="cur">$</span>42.50</div>
                         <div className="ph-sub">Payment received</div>
                       </div>
                     </div>
