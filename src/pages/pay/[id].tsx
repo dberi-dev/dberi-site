@@ -65,7 +65,7 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
       country: 'US',
       currency: paymentLink.currency.toLowerCase(),
       total: {
-        label: paymentLink.description || 'Payment',
+        label: paymentLink.merchant_name || paymentLink.description || 'Payment',
         amount: paymentLink.amount,
       },
       requestPayerName: false,
@@ -74,10 +74,13 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
     });
 
     pr.canMakePayment().then((result) => {
+      console.log('Payment Request canMakePayment result:', result);
       if (result) {
         setPaymentRequest(pr);
         setCanMakePayment(true);
       }
+    }).catch(err => {
+      console.error('Payment Request error:', err);
     });
 
     pr.on('paymentmethod', async (ev: PaymentRequestPaymentMethodEvent) => {
@@ -764,6 +767,21 @@ export default function PaymentLinkPage() {
                 💰
               </div>
 
+              {paymentLink.merchant_name && (
+                <p
+                  style={{
+                    fontSize: 14,
+                    color: "rgba(255,255,255,0.5)",
+                    textAlign: "center",
+                    marginBottom: 16,
+                    fontWeight: 500,
+                    letterSpacing: "0.02em",
+                  }}
+                >
+                  {paymentLink.merchant_name}
+                </p>
+              )}
+
               <h1
                 style={{
                   fontFamily: "'Instrument Serif', serif",
@@ -880,6 +898,21 @@ export default function PaymentLinkPage() {
               >
                 ← Back
               </button>
+
+              {paymentLink.merchant_name && (
+                <p
+                  style={{
+                    fontSize: 14,
+                    color: "rgba(255,255,255,0.5)",
+                    textAlign: "center",
+                    marginBottom: 12,
+                    fontWeight: 500,
+                    letterSpacing: "0.02em",
+                  }}
+                >
+                  {paymentLink.merchant_name}
+                </p>
+              )}
 
               <h1
                 style={{
