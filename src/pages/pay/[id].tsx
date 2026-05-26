@@ -31,16 +31,26 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
 
   const formatPhoneNumber = (value: string) => {
     // Remove all non-digits
-    const digits = value.replace(/\D/g, '');
+    let digits = value.replace(/\D/g, '');
 
-    // Format as we type
+    // If starts with 1 and has 11 digits, use as-is
+    // If has 10 digits, prepend 1
+    // Otherwise use as-is
+    if (digits.length === 10) {
+      digits = '1' + digits;
+    } else if (digits.length > 11) {
+      // Limit to 11 digits
+      digits = digits.slice(0, 11);
+    }
+
+    // Format as we type - always assume US +1
     if (digits.length === 0) return '';
-    if (digits.length <= 1) return `+${digits}`;
-    if (digits.length <= 4) return `+${digits.slice(0, 1)} (${digits.slice(1)}`;
-    if (digits.length <= 7) return `+${digits.slice(0, 1)} (${digits.slice(1, 4)}) ${digits.slice(4)}`;
-    if (digits.length <= 11) return `+${digits.slice(0, 1)} (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
-    // Limit to 11 digits (+1 + 10 digits)
-    return `+${digits.slice(0, 1)} (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7, 11)}`;
+    if (digits.length === 1) return `+${digits}`;
+    if (digits.length <= 4) return `+1 (${digits.slice(1)}`;
+    if (digits.length <= 7) return `+1 (${digits.slice(1, 4)}) ${digits.slice(4)}`;
+    if (digits.length <= 11) return `+1 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
+
+    return `+1 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7, 11)}`;
   };
 
   const getDigitsOnly = (formatted: string) => {
