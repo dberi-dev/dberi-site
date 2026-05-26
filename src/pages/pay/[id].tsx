@@ -947,27 +947,23 @@ export default function PaymentLinkPage() {
           )}
         </div>
 
-        <p
-          style={{
-            marginTop: 32,
-            fontSize: 13,
-            color: "rgba(255,255,255,0.4)",
-            textAlign: "center",
-            maxWidth: 400,
-          }}
-        >
-          {isPending && !showWebPayment
-            ? platform === 'ios'
-              ? "Open the link in the dberi app for the fastest checkout, or pay with your card on the web."
-              : platform === 'android'
-              ? "Android app coming soon! Pay with your card on the web for now."
-              : "Pay with your card on the web. Mobile apps available on iOS."
-            : isPending && showWebPayment
-            ? "Enter your card details to complete the payment securely."
-            : isExpired
-            ? "This payment link has expired."
-            : "This payment has already been completed."}
-        </p>
+        {(isPending && showWebPayment) || isExpired || paymentLink.status !== 'pending' ? (
+          <p
+            style={{
+              marginTop: 32,
+              fontSize: 13,
+              color: "rgba(255,255,255,0.4)",
+              textAlign: "center",
+              maxWidth: 400,
+            }}
+          >
+            {isPending && showWebPayment
+              ? "Enter your card details to complete the payment securely."
+              : isExpired
+              ? "This payment link has expired."
+              : "This payment has already been completed."}
+          </p>
+        ) : null}
       </div>
     </>
   );
