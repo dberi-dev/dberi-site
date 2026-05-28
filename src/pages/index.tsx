@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaStore } from 'react-icons/fa';
 
 const css = `
   *,*::before,*::after{box-sizing:border-box}
@@ -233,39 +234,14 @@ const css = `
   }
   .phone .scr{
     position:relative;width:100%;height:100%;border-radius:30px;overflow:hidden;
-    background:linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    background:#1a1a1a;
     color:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:40px 24px 24px;
-  }
-  .phone .scr::before{
-    content:"";position:absolute;inset:0;
-    background-image:radial-gradient(circle, rgba(91, 143, 249, 0.4) 1px, transparent 1px);
-    background-size:8px 8px;
-    opacity:0.6;
-    animation:particles 20s linear infinite;
-  }
-  @keyframes particles{
-    0%{transform:translateY(0)}
-    100%{transform:translateY(-100px)}
-  }
-  .ph-header{
-    position:absolute;top:60px;left:0;right:0;
-    text-align:center;z-index:2;
-  }
-  .ph-nfc-icon{
-    width:48px;height:48px;margin:0 auto 12px;
-    border:2px solid rgba(255,255,255,0.6);border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .ph-header-text{
-    font-size:18px;font-weight:500;color:#ffffff;
+    padding:60px 24px 40px;
   }
   .ph-card{
-    background:rgba(42,42,42,0.95);
-    border-radius:20px;padding:28px 24px;
-    backdrop-filter:blur(20px);
-    box-shadow:0 20px 60px rgba(0,0,0,0.5);
-    width:90%;max-width:280px;
+    background:#2a2a2a;
+    border-radius:24px;padding:32px 28px;
+    width:90%;max-width:300px;
     z-index:2;position:relative;
   }
   .ph-stack{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%}
@@ -277,17 +253,26 @@ const css = `
   .ph-hdr .bell{width:22px;height:22px;border-radius:50%;background:rgba(10,10,11,.05);display:flex;align-items:center;justify-content:center;color:rgba(10,10,11,.6)}
 
   .ph-icon{
-    width:64px;height:64px;border-radius:50%;background:#7c7cff;
-    display:flex;align-items:center;justify-content:center;font-size:28px;
-    margin-bottom:4px;
+    width:80px;height:80px;border-radius:50%;background:#3a3a3a;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:8px;color:#fbbf24;
   }
   .ph-merchant{
-    text-align:center;font-size:15px;font-weight:500;
+    text-align:center;font-size:12px;text-transform:uppercase;
+    color:rgba(255,255,255,.5);letter-spacing:.15em;font-weight:500;
+    margin-bottom:16px;
+  }
+  .ph-title{
+    text-align:center;font-size:20px;font-weight:600;
     color:#ffffff;letter-spacing:-0.01em;margin-bottom:8px;
   }
   .ph-amt{
-    text-align:center;font-size:48px;font-weight:700;
+    text-align:center;font-size:56px;font-weight:700;
     letter-spacing:-0.04em;color:#ffffff;line-height:1;
+    margin-bottom:12px;
+  }
+  .ph-subtitle{
+    text-align:center;font-size:14px;color:rgba(255,255,255,.5);
   }
 
   .ph-cust{
@@ -480,14 +465,13 @@ const css = `
     .section{padding:64px 20px}
     .foot-grid{grid-template-columns:1fr}
     .phone{width:200px;height:400px}
-    .ph-header{top:50px}
-    .ph-nfc-icon{width:38px;height:38px}
-    .ph-nfc-icon svg{width:18px;height:18px}
-    .ph-header-text{font-size:15px}
-    .ph-card{padding:22px 18px}
-    .ph-icon{width:52px;height:52px;font-size:24px}
-    .ph-merchant{font-size:13px}
-    .ph-amt{font-size:38px}
+    .ph-card{padding:24px 20px}
+    .ph-icon{width:64px;height:64px}
+    .ph-icon svg{width:28px;height:28px}
+    .ph-merchant{font-size:10px}
+    .ph-title{font-size:17px}
+    .ph-amt{font-size:44px}
+    .ph-subtitle{font-size:12px}
     .chip-f{font-size:10px;padding:6px 10px 6px 8px}
     .chip-f .ic{width:18px;height:18px}
     .chip-f .ic svg{width:11px;height:11px}
@@ -694,21 +678,15 @@ export default function DberiLanding() {
                     <div className="notch"></div>
                     <div className="stat"><span>9:41</span><span>●●●</span></div>
                     <div className="scr">
-                      <div className="ph-header">
-                        <div className="ph-nfc-icon">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M6 9l6 6 6-6"/>
-                            <path d="M18 9c-4.5-4.5-10.5-4.5-15 0"/>
-                            <path d="M9 12c1.5-1.5 4.5-1.5 6 0"/>
-                          </svg>
-                        </div>
-                        <div className="ph-header-text">Hold Here to Pay</div>
-                      </div>
                       <div className="ph-card">
                         <div className="ph-stack">
-                          <div className="ph-icon">🏪</div>
-                          <div className="ph-merchant">Pay Smart Home Services</div>
-                          <div className="ph-amt">$349.00</div>
+                          <div className="ph-icon">
+                            <FaStore size={36} />
+                          </div>
+                          <div className="ph-merchant">Test Cafe</div>
+                          <div className="ph-title">Payment Request</div>
+                          <div className="ph-amt">$9.00</div>
+                          <div className="ph-subtitle">In-store purchase</div>
                         </div>
                       </div>
                     </div>
