@@ -664,6 +664,10 @@ export default function PaymentLinkPage() {
 
   // Show the new PayScreen UI for pending payments
   if (isPending && !showWebPayment) {
+    // Convert amount to display units (dollars for USD, whole yen for JPY, etc.)
+    const isZeroDecimal = ZERO_DECIMAL_CURRENCIES.includes(paymentLink.currency);
+    const displayAmount = isZeroDecimal ? paymentLink.amount : paymentLink.amount / 100;
+
     return (
       <>
         <Head>
@@ -671,7 +675,7 @@ export default function PaymentLinkPage() {
         </Head>
         <PayScreen
           merchant={paymentLink.merchant_name || "dberi"}
-          amount={paymentLink.amount / 100}
+          amount={displayAmount}
           currency={paymentLink.currency}
           onPay={() => {
             // For now, just show the card payment form
