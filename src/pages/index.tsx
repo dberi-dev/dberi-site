@@ -826,7 +826,7 @@ export default function DberiLanding() {
                   <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Unlimited team members</li>
                 </ul>
 
-                <button className="btn btn-primary" onClick={() => handleCheckout('price_1Tc0h2CZX9LsXZgVvoFup0y7')}>
+                <button className="btn btn-primary" onClick={() => handleCheckout('price_1Tc0xQCZX9LsXZgVc0CjFp82')}>
                   Get started
                   <svg className="arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </button>
@@ -848,7 +848,7 @@ export default function DberiLanding() {
                   <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Priority support</li>
                 </ul>
 
-                <button className="btn btn-primary" onClick={() => handleCheckout('price_1Tc0htCZX9LsXZgVD2d0T4Sd')}>
+                <button className="btn btn-primary" onClick={() => handleCheckout('price_1Tc0xpCZX9LsXZgVCwB1VxI9')}>
                   Get started
                   <svg className="arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </button>
