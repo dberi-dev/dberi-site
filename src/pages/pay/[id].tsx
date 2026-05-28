@@ -672,6 +672,7 @@ export default function PaymentLinkPage() {
         <PayScreen
           merchant={paymentLink.merchant_name || "dberi"}
           amount={paymentLink.amount / 100}
+          currency={paymentLink.currency}
           onPay={() => {
             // For now, just show the card payment form
             setShowWebPayment(true);

@@ -9,6 +9,8 @@ export interface PayScreenProps {
   merchant?: string;
   /** Amount in dollars (e.g. 349 → "$349.00"). */
   amount?: number;
+  /** Currency code (e.g. "USD", "GBP", "JPY"). Defaults to "USD". */
+  currency?: string;
   /** Called when the user taps the Pay button. */
   onPay?: () => void;
   /** Called when the user dismisses (X) or finishes the success state. */
@@ -16,6 +18,26 @@ export interface PayScreenProps {
 }
 
 type StoreIconProps = { size?: number; color?: string };
+
+// ─────────────────────────────────────────────────────────────
+// Currency Symbols
+// ─────────────────────────────────────────────────────────────
+
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  USD: "$",
+  BSD: "$",
+  CAD: "$",
+  AUD: "$",
+  NZD: "$",
+  EUR: "€",
+  GBP: "£",
+  JPY: "¥",
+  CNY: "¥",
+  KRW: "₩",
+  INR: "₹",
+};
+
+const ZERO_DECIMAL_CURRENCIES = ["JPY", "KRW", "VND", "CLP", "TWD", "ISK"];
 
 // ─────────────────────────────────────────────────────────────
 // Icons
@@ -98,17 +120,23 @@ const btnIcon: CSSProperties = {
 export function PayScreen({
   merchant = "Smart Home Services",
   amount = 349,
+  currency = "USD",
   onPay,
   onClose,
 }: PayScreenProps) {
   const [paying, setPaying] = useState(false);
   const [done, setDone] = useState(false);
 
+  const symbol = CURRENCY_SYMBOLS[currency] || "$";
+  const isZeroDecimal = ZERO_DECIMAL_CURRENCIES.includes(currency);
+
   const dollars = Math.floor(amount);
   const cents = Math.round((amount - dollars) * 100)
     .toString()
     .padStart(2, "0");
-  const formatted = `${amount.toFixed(2)}`;
+  const formatted = isZeroDecimal
+    ? `${Math.round(amount)}`
+    : `${amount.toFixed(2)}`;
 
   const handlePay = () => {
     if (paying || done) return;
@@ -245,10 +273,10 @@ export function PayScreen({
               color: "rgba(255,255,255,0.95)",
             }}
           >
-            $
+            {symbol}
           </span>
           {dollars}
-          <span style={{ color: "rgba(255,255,255,0.95)" }}>.{cents}</span>
+          {!isZeroDecimal && <span style={{ color: "rgba(255,255,255,0.95)" }}>.{cents}</span>}
         </div>
       </div>
 
@@ -270,6 +298,7 @@ export function PayScreen({
           <SuccessBlock
             merchant={merchant}
             amount={formatted}
+            symbol={symbol}
             onReset={handleClose}
           />
         ) : (
@@ -302,7 +331,7 @@ export function PayScreen({
                 <span>Processing…</span>
               </>
             ) : (
-              <>Pay ${formatted}</>
+              <>Pay {currency} {symbol}{formatted}</>
             )}
           </button>
         )}
@@ -314,10 +343,11 @@ export function PayScreen({
 interface SuccessBlockProps {
   merchant: string;
   amount: string;
+  symbol: string;
   onReset: () => void;
 }
 
-function SuccessBlock({ merchant, amount, onReset }: SuccessBlockProps) {
+function SuccessBlock({ merchant, amount, symbol, onReset }: SuccessBlockProps) {
   return (
     <div
       style={{
@@ -355,7 +385,7 @@ function SuccessBlock({ merchant, amount, onReset }: SuccessBlockProps) {
         Payment Sent
       </div>
       <div style={{ fontSize: 14, color: "rgba(235,235,245,0.55)" }}>
-        ${amount} to {merchant}
+        {symbol}{amount} to {merchant}
       </div>
       <button
         onClick={onReset}
