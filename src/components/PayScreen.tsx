@@ -331,7 +331,7 @@ export function PayScreen({
                 <span>Processing…</span>
               </>
             ) : (
-              <>Pay {currency} {symbol}{formatted}</>
+              <>Pay {symbol}{formatted}</>
             )}
           </button>
         )}
