@@ -7,6 +7,12 @@ import { PayScreen } from "../../components/PayScreen";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  USD: "$", BSD: "$", CAD: "$", EUR: "€", GBP: "£", JPY: "¥", KRW: "₩", CNY: "¥", INR: "₹", AUD: "$", NZD: "$",
+};
+
+const ZERO_DECIMAL_CURRENCIES = ["JPY", "KRW", "VND", "CLP", "TWD", "ISK"];
+
 interface PaymentLink {
   id: string;
   amount: number;
@@ -432,7 +438,7 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
           fontFamily: "Geist, sans-serif",
         }}
       >
-        {processing ? "Processing..." : `Pay $${(paymentLink.amount / 100).toFixed(2)}`}
+        {processing ? "Processing..." : `Pay ${paymentLink.currency} ${(CURRENCY_SYMBOLS[paymentLink.currency] || "$")}${ZERO_DECIMAL_CURRENCIES.includes(paymentLink.currency) ? paymentLink.amount.toLocaleString() : (paymentLink.amount / 100).toFixed(2)}`}
       </button>
 
     </form>
@@ -491,11 +497,20 @@ export default function PaymentLinkPage() {
     fetchPaymentLink();
   }, [id]);
 
-  const formatAmount = (amount: number) => {
-    return `$${(amount / 100).toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
+  const formatAmount = (amount: number, currency: string) => {
+    const symbol = CURRENCY_SYMBOLS[currency] || "$";
+    const isZeroDecimal = ZERO_DECIMAL_CURRENCIES.includes(currency);
+
+    if (isZeroDecimal) {
+      // For zero-decimal currencies, don't divide by 100
+      return `${currency} ${symbol}${amount.toLocaleString("en-US")}`;
+    } else {
+      // For decimal currencies, divide by 100 and show 2 decimal places
+      return `${currency} ${symbol}${(amount / 100).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`;
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -652,7 +667,7 @@ export default function PaymentLinkPage() {
     return (
       <>
         <Head>
-          <title>{`Pay $${(paymentLink.amount / 100).toFixed(2)} - dberi`}</title>
+          <title>{`Pay ${formatAmount(paymentLink.amount, paymentLink.currency)} - dberi`}</title>
         </Head>
         <PayScreen
           merchant={paymentLink.merchant_name || "dberi"}
@@ -729,7 +744,7 @@ export default function PaymentLinkPage() {
                 marginBottom: 32,
               }}
             >
-              Your payment of {formatAmount(paymentLink.amount)} has been processed successfully.
+              Your payment of {formatAmount(paymentLink.amount, paymentLink.currency)} has been processed successfully.
             </p>
             <a
               href="/"
@@ -759,12 +774,12 @@ export default function PaymentLinkPage() {
   return (
     <>
       <Head>
-        <title>{`Pay ${formatAmount(paymentLink.amount)} - dberi`}</title>
+        <title>{`Pay ${formatAmount(paymentLink.amount, paymentLink.currency)} - dberi`}</title>
         <meta
           name="description"
           content={
             paymentLink.description ||
-            `Payment request for ${formatAmount(paymentLink.amount)}`
+            `Payment request for ${formatAmount(paymentLink.amount, paymentLink.currency)}`
           }
         />
       </Head>
@@ -877,7 +892,7 @@ export default function PaymentLinkPage() {
                   letterSpacing: "-0.02em",
                 }}
               >
-                {formatAmount(paymentLink.amount)}
+                {formatAmount(paymentLink.amount, paymentLink.currency)}
               </div>
 
               {paymentLink.description && (
@@ -995,7 +1010,7 @@ export default function PaymentLinkPage() {
                   marginBottom: 8,
                 }}
               >
-                Pay {formatAmount(paymentLink.amount)}
+                Pay {formatAmount(paymentLink.amount, paymentLink.currency)}
               </h1>
 
               {paymentLink.description && (
