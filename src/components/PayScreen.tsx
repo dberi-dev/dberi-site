@@ -331,24 +331,23 @@ function SuccessBlock({ merchant, amount, onReset }: SuccessBlockProps) {
     >
       <div
         style={{
-          width: 64,
-          height: 64,
-          borderRadius: 32,
-          background: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
+          width: 80,
+          height: 80,
+          borderRadius: 40,
+          background: "#4ade80",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          boxShadow: "0 10px 30px rgba(16,185,129,0.35)",
+          boxShadow: "0 10px 30px rgba(74,222,128,0.4)",
         }}
       >
-        <svg width="32" height="32" viewBox="0 0 32 32">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
           <path
-            d="M8 16L14 22L24 11"
+            d="M5 13l4 4L19 7"
             stroke="#fff"
             strokeWidth="3"
             strokeLinecap="round"
             strokeLinejoin="round"
-            fill="none"
           />
         </svg>
       </div>
