@@ -492,7 +492,10 @@ export default function PaymentLinkPage() {
   }, [id]);
 
   const formatAmount = (amount: number) => {
-    return `$${(amount / 100).toFixed(2)}`;
+    return `$${(amount / 100).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
   };
 
   const getStatusColor = (status: string) => {
