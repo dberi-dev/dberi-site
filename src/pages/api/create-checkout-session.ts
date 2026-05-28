@@ -20,6 +20,11 @@ export default async function handler(
   }
 
   try {
+    // Determine plan name based on price ID
+    let plan = "unknown";
+    if (priceId === "price_1Tc0xQCZX9LsXZgVc0CjFp82") plan = "small_business";
+    if (priceId === "price_1Tc0xpCZX9LsXZgVCwB1VxI9") plan = "professional";
+
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
@@ -29,7 +34,13 @@ export default async function handler(
           quantity: 1,
         },
       ],
-      success_url: `${req.headers.origin || "https://dberi.com"}/?success=true`,
+      customer_email: req.body.email, // Optional: pre-fill email if provided
+      allow_promotion_codes: true,
+      billing_address_collection: "required",
+      metadata: {
+        plan,
+      },
+      success_url: `${req.headers.origin || "https://dberi.com"}/onboarding?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin || "https://dberi.com"}/?canceled=true`,
     });
 
