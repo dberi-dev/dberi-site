@@ -824,7 +824,7 @@ export default function DberiLanding() {
                 <p className="desc">For established businesses with multiple staff and higher transaction volumes.</p>
 
                 <div className="price-num">
-                  <span className="dollar">$</span><span className="amt">30</span><span className="per">/ month</span>
+                  <span className="dollar">$</span><span className="amt">25</span><span className="per">/ month</span>
                 </div>
 
                 <ul className="feat">
@@ -857,7 +857,7 @@ export default function DberiLanding() {
                   <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Dedicated account manager</li>
                 </ul>
 
-                <a className="btn btn-primary" href="#book">
+                <a className="btn btn-primary" href="mailto:ivoine@dberi.com?subject=Enterprise%20Plan%20Inquiry">
                   Contact sales
                   <svg className="arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </a>
