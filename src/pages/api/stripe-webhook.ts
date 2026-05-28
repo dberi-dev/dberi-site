@@ -56,24 +56,40 @@ export default async function handler(
           break;
         }
 
-        // Create merchant account in your backend
+        // Create pending merchant account in backend
         const merchantData = {
+          business_name: customer.name || customer.email?.split("@")[0] || "New Merchant",
           email: customer.email,
           stripe_customer_id: customerId,
           stripe_subscription_id: session.subscription as string,
-          plan: session.metadata?.plan || "unknown",
-          name: customer.name || customer.email?.split("@")[0] || "Merchant",
+          subscription_plan: session.metadata?.plan || "unknown",
+          slug: `merchant-${customerId.slice(-8)}`, // Temporary slug, can be changed later
+          category: "other",
+          status: "pending", // Requires admin approval
         };
 
-        console.log("Creating merchant account:", merchantData);
+        console.log("Creating pending merchant account:", merchantData);
 
-        // TODO: Call your backend API to create the merchant
-        // Example:
-        // const response = await fetch("https://api.dberi.com/merchants", {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify(merchantData),
-        // });
+        try {
+          const response = await fetch("https://api.dberi.com/v1/merchants/create-from-stripe", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${process.env.DBERI_API_KEY}`,
+            },
+            body: JSON.stringify(merchantData),
+          });
+
+          if (!response.ok) {
+            const error = await response.text();
+            console.error("Failed to create merchant:", error);
+          } else {
+            const result = await response.json();
+            console.log("Merchant created successfully:", result);
+          }
+        } catch (error) {
+          console.error("Error calling backend API:", error);
+        }
 
         break;
       }
