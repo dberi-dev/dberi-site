@@ -484,7 +484,7 @@ export default function DberiLanding() {
         <main>
           <section className="hero">
             <div className="copy">
-              <h1>Payments built for Caribbean merchants.</h1>
+              <h1>Payments built for merchants.</h1>
 
               <p className="sub">Take payments at the counter, on the go, or online. Watch your sales land in real time on the dberi dashboard.</p>
 
@@ -628,7 +628,7 @@ export default function DberiLanding() {
             <div className="sec-h">
               <span className="eyebrow">Built for merchants</span>
               <h2>Everything you need to get paid.</h2>
-              <p>From the food truck to the boutique to the dive shop. dberi gives Caribbean merchants a register, a dashboard, and a way for any customer to pay you instantly.</p>
+              <p>From the food truck to the boutique to the dive shop. dberi gives merchants a register, a dashboard, and a way for any customer to pay you instantly.</p>
             </div>
 
             <div className="merch">
@@ -719,14 +719,12 @@ export default function DberiLanding() {
                   <div className="code-copy">Copy</div>
                 </div>
                 <pre className="code-body"><span className="com">// Charge a customer for $42.50 BBD</span>
-      <span className="kw">const</span> charge = <span className="kw">await</span> dberi.charges.<span className="fn">create</span>(&#123;
-        amount: <span className="num2">4250</span>,
-        currency: <span className="str">"BBD"</span>,
-        source: <span className="str">"tok_visa"</span>,
-        description: <span className="str">"Roti &amp; pumpkin curry"</span>
-      &#125;);
-
-      <span className="com">// =&gt; charge.status === "succeeded"</span></pre>
+<span className="kw">const</span> charge = <span className="kw">await</span> dberi.charges.<span className="fn">create</span>(&#123;
+  amount: <span className="num2">4250</span>,
+  currency: <span className="str">"BBD"</span>,
+  source: <span className="str">"tok_visa"</span>,
+  description: <span className="str">"Roti &amp; pumpkin curry"</span>
+&#125;);</pre>
               </div>
             </div>
           </section>
@@ -804,7 +802,7 @@ export default function DberiLanding() {
           <div className="foot-grid">
             <div className="col about">
               <div className="wm"><span className="glyph">d</span>dberi</div>
-              <p>Modern financial infrastructure for the Caribbean. Built in the region, for the region.</p>
+              <p>Modern financial infrastructure built for the Caribbean region.</p>
             </div>
             <div className="col">
               <h5>Product</h5>
