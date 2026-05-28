@@ -1,5 +1,4 @@
 import React from 'react';
-import { FaStore } from 'react-icons/fa';
 
 const css = `
   *,*::before,*::after{box-sizing:border-box}
@@ -234,46 +233,30 @@ const css = `
   }
   .phone .scr{
     position:relative;width:100%;height:100%;border-radius:30px;overflow:hidden;
-    background:#1a1a1a;
-    color:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:60px 24px 40px;
+    background:linear-gradient(180deg,#fafafa 0%,#f5f5f5 100%);
+    color:#0a0a0b;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:40px 24px 24px;
   }
-  .ph-card{
-    background:#2a2a2a;
-    border-radius:24px;padding:32px 28px;
-    width:90%;max-width:300px;
-    z-index:2;position:relative;
-  }
-  .ph-stack{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%}
+  .ph-stack{display:flex;flex-direction:column;align-items:center;gap:24px;width:100%}
   .phone .notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:74px;height:18px;border-radius:10px;background:#000;z-index:3}
-  .phone .stat{position:absolute;top:14px;left:18px;right:18px;display:flex;justify-content:space-between;font-size:10.5px;color:rgba(255,255,255,.55);font-weight:600;letter-spacing:-0.01em;z-index:2}
+  .phone .stat{position:absolute;top:14px;left:18px;right:18px;display:flex;justify-content:space-between;font-size:10.5px;color:rgba(10,10,11,.65);font-weight:600;letter-spacing:-0.01em;z-index:2}
 
   .ph-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
   .ph-hdr .l{font-size:11px;color:rgba(10,10,11,.5);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
   .ph-hdr .bell{width:22px;height:22px;border-radius:50%;background:rgba(10,10,11,.05);display:flex;align-items:center;justify-content:center;color:rgba(10,10,11,.6)}
 
-  .ph-icon{
-    width:80px;height:80px;border-radius:50%;background:#3a3a3a;
+  .ph-check{
+    width:85px;height:85px;border-radius:50%;background:#16a34a;color:#fff;
     display:flex;align-items:center;justify-content:center;
-    margin-bottom:8px;color:#fbbf24;
+    box-shadow:0 0 0 14px rgba(22,163,74,.12);
+    position:relative;
   }
-  .ph-merchant{
-    text-align:center;font-size:12px;text-transform:uppercase;
-    color:rgba(255,255,255,.5);letter-spacing:.15em;font-weight:500;
-    margin-bottom:16px;
+  .ph-check svg{
+    width:34px;height:34px;
   }
-  .ph-title{
-    text-align:center;font-size:20px;font-weight:600;
-    color:#ffffff;letter-spacing:-0.01em;margin-bottom:8px;
-  }
-  .ph-amt{
-    text-align:center;font-size:56px;font-weight:700;
-    letter-spacing:-0.04em;color:#ffffff;line-height:1;
-    margin-bottom:12px;
-  }
-  .ph-subtitle{
-    text-align:center;font-size:14px;color:rgba(255,255,255,.5);
-  }
+  .ph-amt{text-align:center;font-size:48px;font-weight:700;letter-spacing:-0.04em;color:#0a0a0b;line-height:1}
+  .ph-amt .cur{font-size:16px;color:#9ca3af;font-weight:500;margin-right:2px;vertical-align:10px}
+  .ph-sub{text-align:center;font-size:14px;color:#16a34a;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-top:4px}
 
   .ph-cust{
     margin:16px 4px 12px;padding:10px 12px;border-radius:12px;
@@ -465,13 +448,11 @@ const css = `
     .section{padding:64px 20px}
     .foot-grid{grid-template-columns:1fr}
     .phone{width:200px;height:400px}
-    .ph-card{padding:24px 20px}
-    .ph-icon{width:64px;height:64px}
-    .ph-icon svg{width:28px;height:28px}
-    .ph-merchant{font-size:10px}
-    .ph-title{font-size:17px}
-    .ph-amt{font-size:44px}
-    .ph-subtitle{font-size:12px}
+    .ph-check{width:90px;height:90px}
+    .ph-check svg{width:36px;height:36px}
+    .ph-amt{font-size:48px}
+    .ph-amt .cur{font-size:16px;vertical-align:10px}
+    .ph-sub{font-size:12px}
     .chip-f{font-size:10px;padding:6px 10px 6px 8px}
     .chip-f .ic{width:18px;height:18px}
     .chip-f .ic svg{width:11px;height:11px}
@@ -678,16 +659,12 @@ export default function DberiLanding() {
                     <div className="notch"></div>
                     <div className="stat"><span>9:41</span><span>●●●</span></div>
                     <div className="scr">
-                      <div className="ph-card">
-                        <div className="ph-stack">
-                          <div className="ph-icon">
-                            <FaStore size={36} />
-                          </div>
-                          <div className="ph-merchant">Test Cafe</div>
-                          <div className="ph-title">Payment Request</div>
-                          <div className="ph-amt">$9.00</div>
-                          <div className="ph-subtitle">In-store purchase</div>
+                      <div className="ph-stack">
+                        <div className="ph-check">
+                          <svg viewBox="0 0 24 24" fill="none"><path d="M6 12.5L10.5 17L18 8" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
                         </div>
+                        <div className="ph-amt"><span className="cur">$</span>42.50</div>
+                        <div className="ph-sub">Payment received</div>
                       </div>
                     </div>
                   </div>
