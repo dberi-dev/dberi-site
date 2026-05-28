@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import { loadStripe, PaymentRequest, PaymentRequestPaymentMethodEvent } from "@stripe/stripe-js";
 import { Elements, CardElement, PaymentRequestButtonElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { PayScreen } from "../../components/PayScreen";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -603,6 +604,29 @@ export default function PaymentLinkPage() {
   const isPending = paymentLink.status === "pending";
   const isPaid = paymentLink.status === "paid" || paymentSuccess;
   const isExpired = paymentLink.status === "expired";
+
+  // Show the new PayScreen UI for pending payments
+  if (isPending && !showWebPayment) {
+    return (
+      <>
+        <Head>
+          <title>{`Pay $${(paymentLink.amount / 100).toFixed(2)} - dberi`}</title>
+        </Head>
+        <PayScreen
+          merchant={paymentLink.merchant_name || "dberi"}
+          amount={paymentLink.amount / 100}
+          onPay={() => {
+            // For now, just show the card payment form
+            setShowWebPayment(true);
+          }}
+          onClose={() => {
+            // Go back to home or close
+            window.location.href = "/";
+          }}
+        />
+      </>
+    );
+  }
 
   if (isPaid) {
     return (
