@@ -29,6 +29,7 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
   const [processing, setProcessing] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
+  const [saveCard, setSaveCard] = useState(true);
   const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
   const [canMakePayment, setCanMakePayment] = useState(false);
 
@@ -99,6 +100,7 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
             payment_method_id: ev.paymentMethod.id,
             phone_number: ev.payerPhone || '',
             email: ev.payerEmail || null,
+            save_card: true, // Always save for Apple/Google Pay
           }),
         });
 
@@ -174,6 +176,7 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
           payment_method_id: paymentMethod.id,
           phone_number: formattedPhone,
           email: email || null,
+          save_card: saveCard,
         }),
       });
 
@@ -358,6 +361,42 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
             }}
           />
         </div>
+      </div>
+
+      <div style={{ marginBottom: 24 }}>
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            cursor: "pointer",
+            fontSize: 14,
+            color: "rgba(255,255,255,0.9)",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={saveCard}
+            onChange={(e) => setSaveCard(e.target.checked)}
+            style={{
+              width: 18,
+              height: 18,
+              cursor: "pointer",
+              accentColor: "#ffffff",
+            }}
+          />
+          <span>Save card for future payments</span>
+        </label>
+        <p
+          style={{
+            fontSize: 12,
+            color: "rgba(255,255,255,0.5)",
+            marginTop: 6,
+            marginLeft: 28,
+          }}
+        >
+          Pay faster next time by securely saving your card details
+        </p>
       </div>
 
       {error && (
