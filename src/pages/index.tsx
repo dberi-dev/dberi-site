@@ -367,13 +367,24 @@ const css = `
   .v3 .str{color:#e9d9b6}
   .v3 .com{color:rgba(255,255,255,.3)}
 
-  .pricing{position:relative;z-index:10;padding:32px 40px 96px;display:flex;justify-content:center}
+  .pricing{position:relative;z-index:10;padding:32px 40px 96px}
+  .pricing-header{text-align:center;margin-bottom:48px}
+  .pricing-header .tag{display:inline-block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;font-weight:600}
+  .pricing-header h2{font-size:clamp(32px,3.4vw,46px);font-weight:700;letter-spacing:-0.035em;line-height:1.05;margin:0 0 12px;color:var(--ink)}
+  .pricing-header p{color:var(--muted);font-size:16px;max-width:560px;margin:0 auto}
+  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1200px;margin:0 auto}
   .price-card{
-    width:100%;max-width:520px;
+    width:100%;
     background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
     border:1px solid var(--line);border-radius:22px;
     box-shadow:0 30px 60px rgba(0,0,0,.35);
-    padding:36px 36px 32px;text-align:left;
+    padding:36px 32px 32px;text-align:left;
+    display:flex;flex-direction:column;
+  }
+  .price-card.popular{
+    border-color:rgba(139,92,246,0.5);
+    background:linear-gradient(180deg, rgba(139,92,246,.08), rgba(139,92,246,.02));
+    box-shadow:0 30px 60px rgba(0,0,0,.4), 0 0 0 1px rgba(139,92,246,0.3);
   }
   .price-card .tag{display:inline-block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;font-weight:600}
   .price-card h3{margin:0 0 6px;font-size:22px;font-weight:600;letter-spacing:-0.02em;color:var(--ink)}
@@ -382,10 +393,14 @@ const css = `
   .price-num .dollar{font-size:22px;color:var(--muted);font-weight:500}
   .price-num .amt{font-size:64px;font-weight:600;letter-spacing:-0.04em;line-height:1;color:var(--ink)}
   .price-num .per{color:var(--muted);font-size:14px;letter-spacing:-0.01em;margin-left:4px}
-  .feat{list-style:none;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:11px}
-  .feat li{display:flex;align-items:center;gap:11px;color:var(--ink-2);font-size:14px}
-  .feat svg{flex:0 0 auto;color:#ffffff}
+  .feat{list-style:none;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:11px;flex:1}
+  .feat li{display:flex;align-items:flex-start;gap:11px;color:var(--ink-2);font-size:13.5px;line-height:1.5}
+  .feat svg{flex:0 0 auto;color:#ffffff;margin-top:2px}
   .price-card .btn-primary{width:100%;justify-content:center;height:44px}
+
+  @media (max-width:980px){
+    .pricing-grid{grid-template-columns:1fr;max-width:480px;margin:0 auto}
+  }
 
   .faq{display:flex;flex-direction:column;gap:0;max-width:760px;margin:0 auto;border-top:1px solid var(--line)}
   .qa{border-bottom:1px solid var(--line)}
@@ -774,26 +789,80 @@ export default function DberiLanding() {
           </section>
 
           <section className="pricing" id="pricing">
-            <div className="price-card">
+            <div className="pricing-header">
               <span className="tag">Simple pricing</span>
-              <h3>One plan. Everything included.</h3>
-              <p className="desc">Flat monthly rate for full access to dberi's payment rails. No per-transaction fees, no surprises.</p>
+              <h2>Choose your plan</h2>
+              <p>Flat monthly rate for full access to dberi's payment rails. No per-transaction fees, no surprises.</p>
+            </div>
 
-              <div className="price-num">
-                <span className="dollar">$</span><span className="amt">10</span><span className="per">/ month</span>
+            <div className="pricing-grid">
+              <div className="price-card">
+                <span className="tag">Small Business</span>
+                <h3>Corner shops &amp; cafes</h3>
+                <p className="desc">Perfect for small retailers, food trucks, and local shops just getting started.</p>
+
+                <div className="price-num">
+                  <span className="dollar">$</span><span className="amt">10</span><span className="per">/ month</span>
+                </div>
+
+                <ul className="feat">
+                  <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Accept payments in-store &amp; online</li>
+                  <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Merchant dashboard</li>
+                  <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Daily payouts to your bank</li>
+                  <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Up to 1 team member</li>
+                </ul>
+
+                <a className="btn btn-primary" href="#book">
+                  Get started
+                  <svg className="arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </a>
               </div>
 
-              <ul className="feat">
-                <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Accept payments at the counter, online, on the go</li>
-                <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Merchant dashboard &amp; analytics</li>
-                <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Daily payouts to your local bank</li>
-                <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>No transaction or hidden fees</li>
-              </ul>
+              <div className="price-card popular">
+                <span className="tag">Professional</span>
+                <h3>Restaurants &amp; boutiques</h3>
+                <p className="desc">For established businesses with multiple staff and higher transaction volumes.</p>
 
-              <a className="btn btn-primary" href="#book">
-                Get started
-                <svg className="arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              </a>
+                <div className="price-num">
+                  <span className="dollar">$</span><span className="amt">30</span><span className="per">/ month</span>
+                </div>
+
+                <ul className="feat">
+                  <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Everything in Small Business</li>
+                  <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Advanced analytics &amp; reporting</li>
+                  <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Inventory management</li>
+                  <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Up to 5 team members</li>
+                  <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Priority support</li>
+                </ul>
+
+                <a className="btn btn-primary" href="#book">
+                  Get started
+                  <svg className="arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </a>
+              </div>
+
+              <div className="price-card">
+                <span className="tag">Enterprise</span>
+                <h3>Large retailers &amp; chains</h3>
+                <p className="desc">Custom solutions for large businesses, franchises, and multi-location operations.</p>
+
+                <div className="price-num">
+                  <span className="dollar">$</span><span className="amt">100</span><span className="per">/ month</span>
+                </div>
+
+                <ul className="feat">
+                  <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Everything in Professional</li>
+                  <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Multi-location management</li>
+                  <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Custom API integrations</li>
+                  <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Unlimited team members</li>
+                  <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>Dedicated account manager</li>
+                </ul>
+
+                <a className="btn btn-primary" href="#book">
+                  Contact sales
+                  <svg className="arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </a>
+              </div>
             </div>
           </section>
         </main>
