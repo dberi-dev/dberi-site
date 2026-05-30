@@ -255,6 +255,15 @@ export default function MenuPage() {
     }
   };
 
+  // Calculate cart total using current prices from menuData
+  const getCartTotal = () => {
+    return cart.items.reduce((sum, item) => {
+      const currentItem = menuData?.items.find(i => i.id === item.id);
+      const currentPrice = currentItem?.price ?? item.price;
+      return sum + (currentPrice * item.quantity);
+    }, 0);
+  };
+
   const handleAddToCart = (item: MenuItem) => {
     cart.addItem({
       id: item.id,
@@ -927,7 +936,7 @@ export default function MenuPage() {
                 )}
                 <div style={{ fontSize: 13, opacity: 0.9 }}>View Cart</div>
                 <div style={{ fontSize: 16, fontWeight: 700 }}>
-                  {formatPrice(cart.getTotal(), menuData.currency)}
+                  {formatPrice(getCartTotal(), menuData.currency)}
                 </div>
               </div>
             </div>
@@ -1038,7 +1047,13 @@ export default function MenuPage() {
                         {item.name}
                       </h3>
                       <p style={{ fontSize: 15, fontWeight: 700, color: "#ef4444", margin: "0 0 8px 0" }}>
-                        {formatPrice(item.price, item.currency)}
+                        {(() => {
+                          // Get current price from menuData instead of stored cart price
+                          const currentItem = menuData?.items.find(i => i.id === item.id);
+                          const currentPrice = currentItem?.price ?? item.price;
+                          const currentCurrency = menuData?.currency ?? item.currency;
+                          return formatPrice(currentPrice, currentCurrency);
+                        })()}
                       </p>
                       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                         <button
@@ -1111,13 +1126,13 @@ export default function MenuPage() {
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
                     <span style={{ fontSize: 14, color: "#6b7280" }}>Subtotal ({cart.getItemCount()} items)</span>
                     <span style={{ fontSize: 14, fontWeight: 600, color: "#111827" }}>
-                      {formatPrice(cart.getTotal(), menuData.currency)}
+                      {formatPrice(getCartTotal(), menuData.currency)}
                     </span>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 12, borderTop: "1px solid #e5e7eb" }}>
                     <span style={{ fontSize: 16, fontWeight: 700, color: "#111827" }}>Total</span>
                     <span style={{ fontSize: 18, fontWeight: 700, color: "#ef4444" }}>
-                      {formatPrice(cart.getTotal(), menuData.currency)}
+                      {formatPrice(getCartTotal(), menuData.currency)}
                     </span>
                   </div>
                 </div>
@@ -1189,16 +1204,23 @@ export default function MenuPage() {
               {/* Order Summary */}
               <div style={{ marginBottom: 20, padding: 16, background: "#f9fafb", borderRadius: 8 }}>
                 <div style={{ fontSize: 14, fontWeight: 600, color: "#111827", marginBottom: 12 }}>Order Summary</div>
-                {cart.items.map((item) => (
-                  <div key={item.id} style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, fontSize: 13 }}>
-                    <span style={{ color: "#6b7280" }}>{item.quantity}x {item.name}</span>
-                    <span style={{ color: "#111827", fontWeight: 600 }}>{formatPrice(item.price * item.quantity, item.currency)}</span>
-                  </div>
-                ))}
+                {cart.items.map((item) => {
+                  // Get current price from menuData instead of stored cart price
+                  const currentItem = menuData?.items.find(i => i.id === item.id);
+                  const currentPrice = currentItem?.price ?? item.price;
+                  const currentCurrency = menuData?.currency ?? item.currency;
+
+                  return (
+                    <div key={item.id} style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, fontSize: 13 }}>
+                      <span style={{ color: "#6b7280" }}>{item.quantity}x {item.name}</span>
+                      <span style={{ color: "#111827", fontWeight: 600 }}>{formatPrice(currentPrice * item.quantity, currentCurrency)}</span>
+                    </div>
+                  );
+                })}
                 <div style={{ borderTop: "1px solid #e5e7eb", paddingTop: 8, marginTop: 8, display: "flex", justifyContent: "space-between" }}>
                   <span style={{ fontSize: 16, fontWeight: 700, color: "#111827" }}>Total</span>
                   <span style={{ fontSize: 18, fontWeight: 700, color: "#ef4444" }}>
-                    {formatPrice(cart.getTotal(), menuData.currency)}
+                    {formatPrice(getCartTotal(), menuData.currency)}
                   </span>
                 </div>
               </div>
@@ -1337,7 +1359,7 @@ export default function MenuPage() {
                 ) : (
                   <Elements stripe={stripePromise}>
                     <CardPaymentForm
-                      amount={cart.getTotal()}
+                      amount={getCartTotal()}
                       currency={menuData?.currency || "USD"}
                       customerName={customerName}
                       customerEmail={customerEmail}
