@@ -40,18 +40,19 @@ export default async function handler(
     return res.status(400).json({ error: "Amount must be an integer (in cents)" });
   }
 
+  const paymentIntentParams: any = {
+    amount,
+    currency: currency.toLowerCase(),
+    payment_method_types: ["card"],
+    metadata: {
+      merchantName: merchantName || "Unknown Merchant",
+      orderType: orderType?.type || "unknown",
+      tableNumber: orderType?.tableNumber || "",
+      customerName: customerName || "",
+    },
+  };
+
   try {
-    const paymentIntentParams: any = {
-      amount,
-      currency: currency.toLowerCase(),
-      payment_method_types: ["card"],
-      metadata: {
-        merchantName: merchantName || "Unknown Merchant",
-        orderType: orderType?.type || "unknown",
-        tableNumber: orderType?.tableNumber || "",
-        customerName: customerName || "",
-      },
-    };
 
     // Only add receipt_email if it's provided and valid
     if (customerEmail && customerEmail.trim()) {
