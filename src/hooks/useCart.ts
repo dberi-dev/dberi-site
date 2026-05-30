@@ -19,15 +19,17 @@ interface CartState {
   items: CartItem[];
   orderType: OrderType | null;
   merchantSlug: string | null;
+  merchantCurrency?: string;
 }
 
 const CART_STORAGE_KEY = "dberi_cart";
 
-export function useCart(merchantSlug?: string) {
+export function useCart(merchantSlug?: string, merchantCurrency?: string) {
   const [cart, setCart] = useState<CartState>({
     items: [],
     orderType: null,
     merchantSlug: null,
+    merchantCurrency: undefined,
   });
 
   // Load cart from localStorage on mount
@@ -36,15 +38,22 @@ export function useCart(merchantSlug?: string) {
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        // Only load if it's for the same merchant
-        if (!merchantSlug || parsed.merchantSlug === merchantSlug) {
+        // Only load if it's for the same merchant and same currency
+        const isSameMerchant = !merchantSlug || parsed.merchantSlug === merchantSlug;
+        const isSameCurrency = !merchantCurrency || !parsed.merchantCurrency || parsed.merchantCurrency === merchantCurrency;
+
+        if (isSameMerchant && isSameCurrency) {
           setCart(parsed);
+        } else if (isSameMerchant && !isSameCurrency) {
+          // Same merchant but different currency - clear cart and notify
+          console.log(`Currency changed from ${parsed.merchantCurrency} to ${merchantCurrency}, clearing cart`);
+          localStorage.removeItem(CART_STORAGE_KEY);
         }
       } catch (e) {
         console.error("Failed to parse cart from localStorage", e);
       }
     }
-  }, [merchantSlug]);
+  }, [merchantSlug, merchantCurrency]);
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
@@ -70,6 +79,7 @@ export function useCart(merchantSlug?: string) {
           ...prev,
           items: newItems,
           merchantSlug: merchantSlug || prev.merchantSlug,
+          merchantCurrency: merchantCurrency || prev.merchantCurrency,
         };
       } else {
         // New item
@@ -77,6 +87,7 @@ export function useCart(merchantSlug?: string) {
           ...prev,
           items: [...prev.items, { ...item, quantity: 1 }],
           merchantSlug: merchantSlug || prev.merchantSlug,
+          merchantCurrency: merchantCurrency || prev.merchantCurrency,
         };
       }
     });

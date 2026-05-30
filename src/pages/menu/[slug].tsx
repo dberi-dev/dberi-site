@@ -206,7 +206,10 @@ export default function MenuPage() {
   const [customerEmail, setCustomerEmail] = useState("");
   const categoryRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
-  const cart = useCart(typeof slug === "string" ? slug : undefined);
+  const cart = useCart(
+    typeof slug === "string" ? slug : undefined,
+    menuData?.currency
+  );
 
   useEffect(() => {
     if (table && typeof table === "string" && !cart.orderType) {
