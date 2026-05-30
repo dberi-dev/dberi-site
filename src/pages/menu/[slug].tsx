@@ -51,6 +51,7 @@ export default function MenuPage() {
   const [showCart, setShowCart] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [showTableSelector, setShowTableSelector] = useState(false);
+  const [hasSelectedTable, setHasSelectedTable] = useState(false);
   const categoryRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
   const cart = useCart(typeof slug === "string" ? slug : undefined);
@@ -58,8 +59,12 @@ export default function MenuPage() {
   useEffect(() => {
     if (table && typeof table === "string" && !cart.orderType) {
       cart.setOrderType({ type: "table", tableNumber: table });
+      setHasSelectedTable(true);
+    } else if (!table && !hasSelectedTable && !loading) {
+      // Show table selector on initial load if no table URL param
+      setShowTableSelector(true);
     }
-  }, [table]);
+  }, [table, loading, hasSelectedTable]);
 
   useEffect(() => {
     if (!slug) return;
@@ -352,27 +357,8 @@ export default function MenuPage() {
                   >
                     Pickup
                   </button>
-                  <button
-                    onClick={() => setShowTableSelector(true)}
-                    style={{
-                      padding: "6px 12px",
-                      background: cart.orderType?.type === "table" ? "#3b82f6" : "transparent",
-                      color: cart.orderType?.type === "table" ? "#ffffff" : "#6b7280",
-                      border: "none",
-                      borderRadius: 6,
-                      fontSize: 13,
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      whiteSpace: "nowrap",
-                      transition: "all 0.2s ease",
-                    }}
-                  >
-                    {cart.orderType?.type === "table" && cart.orderType.tableNumber
-                      ? `Table ${cart.orderType.tableNumber}`
-                      : "Table"}
-                  </button>
                 </div>
-                {cart.orderType && (
+                {cart.orderType && cart.orderType.type !== "table" && (
                   <button
                     onClick={() => cart.setOrderType(null as any)}
                     style={{
@@ -1013,10 +999,8 @@ export default function MenuPage() {
               justifyContent: "center",
               padding: 16,
             }}
-            onClick={() => setShowTableSelector(false)}
           >
             <div
-              onClick={(e) => e.stopPropagation()}
               style={{
                 background: "#ffffff",
                 borderRadius: 16,
@@ -1044,6 +1028,7 @@ export default function MenuPage() {
                       key={tableNum}
                       onClick={() => {
                         cart.setOrderType({ type: "table", tableNumber: String(tableNum) });
+                        setHasSelectedTable(true);
                         setShowTableSelector(false);
                       }}
                       style={{
@@ -1078,6 +1063,7 @@ export default function MenuPage() {
               <button
                 onClick={() => {
                   cart.setOrderType({ type: "table", tableNumber: "N/A" });
+                  setHasSelectedTable(true);
                   setShowTableSelector(false);
                 }}
                 style={{
@@ -1090,25 +1076,9 @@ export default function MenuPage() {
                   fontSize: 16,
                   fontWeight: 600,
                   cursor: "pointer",
-                  marginBottom: 12,
                 }}
               >
                 N/A (Not at table)
-              </button>
-              <button
-                onClick={() => setShowTableSelector(false)}
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  background: "transparent",
-                  color: "#6b7280",
-                  border: "none",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                }}
-              >
-                Cancel
               </button>
             </div>
           </div>
