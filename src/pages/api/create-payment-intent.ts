@@ -15,12 +15,19 @@ export default async function handler(
 
   const { amount, currency, customerName, customerEmail, merchantName, orderType } = req.body;
 
+  console.log("Payment Intent Request:", { amount, currency, customerName, merchantName, orderType });
+
   if (!amount || !currency) {
     return res.status(400).json({ error: "Amount and currency are required" });
   }
 
+  // Validate amount is a positive integer
+  if (typeof amount !== "number" || amount <= 0 || !Number.isInteger(amount)) {
+    return res.status(400).json({ error: "Amount must be a positive integer in cents" });
+  }
+
   try {
-    const paymentIntent = await stripe.paymentIntents.create({
+    const paymentIntentParams: any = {
       amount,
       currency: currency.toLowerCase(),
       payment_method_types: ["card"],
@@ -30,12 +37,27 @@ export default async function handler(
         tableNumber: orderType?.tableNumber || "",
         customerName: customerName || "",
       },
-      receipt_email: customerEmail || undefined,
-    });
+    };
+
+    // Only add receipt_email if it's provided and valid
+    if (customerEmail && customerEmail.trim()) {
+      paymentIntentParams.receipt_email = customerEmail;
+    }
+
+    console.log("Creating Payment Intent with params:", paymentIntentParams);
+
+    const paymentIntent = await stripe.paymentIntents.create(paymentIntentParams);
+
+    console.log("Payment Intent created:", paymentIntent.id);
 
     res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (err: any) {
-    console.error("Payment Intent error:", err);
-    res.status(500).json({ error: err.message, details: err });
+    console.error("Payment Intent error details:", {
+      message: err.message,
+      type: err.type,
+      code: err.code,
+      raw: err.raw,
+    });
+    res.status(500).json({ error: err.message || "Failed to create payment intent" });
   }
 }
