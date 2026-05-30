@@ -50,6 +50,7 @@ export default function MenuPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showCart, setShowCart] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [showTableSelector, setShowTableSelector] = useState(false);
   const categoryRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
   const cart = useCart(typeof slug === "string" ? slug : undefined);
@@ -306,50 +307,93 @@ export default function MenuPage() {
             </div>
 
             {!table && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "#f3f4f6",
-                  borderRadius: 8,
-                  padding: 3,
-                }}
-              >
-                <button
-                  onClick={() => cart.setOrderType({ type: "delivery" })}
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div
                   style={{
-                    padding: "6px 12px",
-                    background: cart.orderType?.type === "delivery" ? "#3b82f6" : "transparent",
-                    color: cart.orderType?.type === "delivery" ? "#ffffff" : "#6b7280",
-                    border: "none",
-                    borderRadius: 6,
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                    transition: "all 0.2s ease",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    background: "#f3f4f6",
+                    borderRadius: 8,
+                    padding: 3,
                   }}
                 >
-                  Delivery
-                </button>
-                <button
-                  onClick={() => cart.setOrderType({ type: "pickup" })}
-                  style={{
-                    padding: "6px 12px",
-                    background: cart.orderType?.type === "pickup" ? "#3b82f6" : "transparent",
-                    color: cart.orderType?.type === "pickup" ? "#ffffff" : "#6b7280",
-                    border: "none",
-                    borderRadius: 6,
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  Pickup
-                </button>
+                  <button
+                    onClick={() => cart.setOrderType({ type: "delivery" })}
+                    style={{
+                      padding: "6px 12px",
+                      background: cart.orderType?.type === "delivery" ? "#3b82f6" : "transparent",
+                      color: cart.orderType?.type === "delivery" ? "#ffffff" : "#6b7280",
+                      border: "none",
+                      borderRadius: 6,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                      transition: "all 0.2s ease",
+                    }}
+                  >
+                    Delivery
+                  </button>
+                  <button
+                    onClick={() => cart.setOrderType({ type: "pickup" })}
+                    style={{
+                      padding: "6px 12px",
+                      background: cart.orderType?.type === "pickup" ? "#3b82f6" : "transparent",
+                      color: cart.orderType?.type === "pickup" ? "#ffffff" : "#6b7280",
+                      border: "none",
+                      borderRadius: 6,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                      transition: "all 0.2s ease",
+                    }}
+                  >
+                    Pickup
+                  </button>
+                  <button
+                    onClick={() => setShowTableSelector(true)}
+                    style={{
+                      padding: "6px 12px",
+                      background: cart.orderType?.type === "table" ? "#3b82f6" : "transparent",
+                      color: cart.orderType?.type === "table" ? "#ffffff" : "#6b7280",
+                      border: "none",
+                      borderRadius: 6,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                      transition: "all 0.2s ease",
+                    }}
+                  >
+                    {cart.orderType?.type === "table" && cart.orderType.tableNumber
+                      ? `Table ${cart.orderType.tableNumber}`
+                      : "Table"}
+                  </button>
+                </div>
+                {cart.orderType && (
+                  <button
+                    onClick={() => cart.setOrderType(null as any)}
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: "50%",
+                      border: "none",
+                      background: "#ef4444",
+                      color: "#ffffff",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 14,
+                      fontWeight: 600,
+                    }}
+                    title="Clear selection"
+                  >
+                    ×
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -722,6 +766,13 @@ export default function MenuPage() {
                 {cart.getItemCount()}
               </div>
               <div>
+                {cart.orderType && (
+                  <div style={{ fontSize: 11, opacity: 0.85, marginBottom: 2 }}>
+                    {cart.orderType.type === "table" && `Table ${cart.orderType.tableNumber}`}
+                    {cart.orderType.type === "pickup" && "Pickup"}
+                    {cart.orderType.type === "delivery" && "Delivery"}
+                  </div>
+                )}
                 <div style={{ fontSize: 13, opacity: 0.9 }}>View Cart</div>
                 <div style={{ fontSize: 16, fontWeight: 700 }}>
                   {formatPrice(cart.getTotal(), menuData.currency)}
@@ -945,6 +996,120 @@ export default function MenuPage() {
                   )}
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Table Selector Modal */}
+        {showTableSelector && (
+          <div
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.5)",
+              zIndex: 50,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 16,
+            }}
+            onClick={() => setShowTableSelector(false)}
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: "#ffffff",
+                borderRadius: 16,
+                padding: 24,
+                maxWidth: 400,
+                width: "100%",
+              }}
+            >
+              <h2 style={{ fontSize: 20, fontWeight: 700, color: "#111827", margin: "0 0 20px 0", textAlign: "center" }}>
+                Select Table Number
+              </h2>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(4, 1fr)",
+                  gap: 12,
+                  marginBottom: 16,
+                }}
+              >
+                {[...Array(10)].map((_, i) => {
+                  const tableNum = i + 1;
+                  const isSelected = cart.orderType?.type === "table" && cart.orderType.tableNumber === String(tableNum);
+                  return (
+                    <button
+                      key={tableNum}
+                      onClick={() => {
+                        cart.setOrderType({ type: "table", tableNumber: String(tableNum) });
+                        setShowTableSelector(false);
+                      }}
+                      style={{
+                        padding: "16px 12px",
+                        background: isSelected ? "#3b82f6" : "#f9fafb",
+                        color: isSelected ? "#ffffff" : "#111827",
+                        border: isSelected ? "2px solid #3b82f6" : "1px solid #e5e7eb",
+                        borderRadius: 8,
+                        fontSize: 16,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isSelected) {
+                          e.currentTarget.style.background = "#eff6ff";
+                          e.currentTarget.style.borderColor = "#3b82f6";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isSelected) {
+                          e.currentTarget.style.background = "#f9fafb";
+                          e.currentTarget.style.borderColor = "#e5e7eb";
+                        }
+                      }}
+                    >
+                      {tableNum}
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                onClick={() => {
+                  cart.setOrderType({ type: "table", tableNumber: "N/A" });
+                  setShowTableSelector(false);
+                }}
+                style={{
+                  width: "100%",
+                  padding: "14px",
+                  background: cart.orderType?.type === "table" && cart.orderType.tableNumber === "N/A" ? "#3b82f6" : "#f9fafb",
+                  color: cart.orderType?.type === "table" && cart.orderType.tableNumber === "N/A" ? "#ffffff" : "#111827",
+                  border: cart.orderType?.type === "table" && cart.orderType.tableNumber === "N/A" ? "2px solid #3b82f6" : "1px solid #e5e7eb",
+                  borderRadius: 8,
+                  fontSize: 16,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  marginBottom: 12,
+                }}
+              >
+                N/A (Not at table)
+              </button>
+              <button
+                onClick={() => setShowTableSelector(false)}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  background: "transparent",
+                  color: "#6b7280",
+                  border: "none",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         )}
