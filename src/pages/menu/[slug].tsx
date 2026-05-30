@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import { useCart } from "../../hooks/useCart";
-import { PayScreen } from "../../components/PayScreen";
 
 interface MenuItem {
   id: string;
@@ -50,8 +49,7 @@ export default function MenuPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [showCart, setShowCart] = useState(false);
-  const [showOrderTypeModal, setShowOrderTypeModal] = useState(false);
-  const [showCheckout, setShowCheckout] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const categoryRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
   const cart = useCart(typeof slug === "string" ? slug : undefined);
@@ -97,6 +95,54 @@ export default function MenuPage() {
       image_url: item.image_url,
       metadata: item.metadata,
     });
+  };
+
+  const handleCheckout = async () => {
+    if (checkoutLoading || cart.items.length === 0) return;
+
+    setCheckoutLoading(true);
+    setShowCart(false);
+
+    try {
+      // Create line items for Stripe
+      const lineItems = cart.items.map((item) => ({
+        price_data: {
+          currency: item.currency.toLowerCase(),
+          product_data: {
+            name: item.name,
+            images: item.image_url ? [item.image_url] : [],
+          },
+          unit_amount: item.price,
+        },
+        quantity: item.quantity,
+      }));
+
+      // Create checkout session
+      const response = await fetch("/api/create-menu-checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          lineItems,
+          merchantName: menuData?.merchant_name,
+          orderType: cart.orderType,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL returned");
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      alert("Failed to start checkout. Please try again.");
+      setCheckoutLoading(false);
+    }
   };
 
   const scrollToCategory = (category: string) => {
@@ -862,124 +908,47 @@ export default function MenuPage() {
                   </div>
                 </div>
                 <button
-                  onClick={() => {
-                    setShowCheckout(true);
-                    setShowCart(false);
-                  }}
+                  onClick={handleCheckout}
+                  disabled={checkoutLoading}
                   style={{
                     width: "100%",
                     padding: "14px",
-                    background: "#3b82f6",
+                    background: checkoutLoading ? "#93c5fd" : "#3b82f6",
                     color: "#ffffff",
                     border: "none",
                     borderRadius: 8,
                     fontSize: 16,
                     fontWeight: 600,
-                    cursor: "pointer",
+                    cursor: checkoutLoading ? "not-allowed" : "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
                   }}
                 >
-                  Checkout
+                  {checkoutLoading ? (
+                    <>
+                      <div
+                        style={{
+                          width: 16,
+                          height: 16,
+                          border: "2px solid rgba(255,255,255,0.3)",
+                          borderTopColor: "#ffffff",
+                          borderRadius: "50%",
+                          animation: "spin 0.8s linear infinite",
+                        }}
+                      />
+                      <span>Processing...</span>
+                    </>
+                  ) : (
+                    "Checkout"
+                  )}
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Order Type Modal */}
-        {showOrderTypeModal && !table && (
-          <div
-            style={{
-              position: "fixed",
-              inset: 0,
-              background: "rgba(0,0,0,0.5)",
-              zIndex: 50,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: 20,
-            }}
-            onClick={() => setShowOrderTypeModal(false)}
-          >
-            <div
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                background: "#ffffff",
-                borderRadius: 16,
-                padding: 24,
-                maxWidth: 400,
-                width: "100%",
-              }}
-            >
-              <h2 style={{ fontSize: 20, fontWeight: 700, color: "#111827", marginBottom: 16 }}>
-                Select Order Type
-              </h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                <button
-                  onClick={() => {
-                    cart.setOrderType({ type: "pickup" });
-                    setShowOrderTypeModal(false);
-                    if (cart.items.length > 0) {
-                      setShowCheckout(true);
-                    }
-                  }}
-                  style={{
-                    padding: "16px",
-                    background: cart.orderType?.type === "pickup" ? "#3b82f6" : "#f3f4f6",
-                    color: cart.orderType?.type === "pickup" ? "#ffffff" : "#111827",
-                    border: "none",
-                    borderRadius: 12,
-                    fontSize: 16,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    textAlign: "left",
-                  }}
-                >
-                  🚶 Pickup
-                </button>
-                <button
-                  onClick={() => {
-                    cart.setOrderType({ type: "delivery" });
-                    setShowOrderTypeModal(false);
-                    if (cart.items.length > 0) {
-                      setShowCheckout(true);
-                    }
-                  }}
-                  style={{
-                    padding: "16px",
-                    background: cart.orderType?.type === "delivery" ? "#3b82f6" : "#f3f4f6",
-                    color: cart.orderType?.type === "delivery" ? "#ffffff" : "#111827",
-                    border: "none",
-                    borderRadius: 12,
-                    fontSize: 16,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    textAlign: "left",
-                  }}
-                >
-                  🚗 Delivery
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Checkout Modal */}
-        {showCheckout && (
-          <div style={{ position: "fixed", inset: 0, zIndex: 60 }}>
-            <PayScreen
-              merchant={menuData.merchant_name}
-              amount={cart.getTotal() / 100}
-              currency={menuData.currency}
-              onPay={() => {
-                console.log("Payment initiated");
-              }}
-              onClose={() => {
-                setShowCheckout(false);
-                cart.clearCart();
-              }}
-            />
-          </div>
-        )}
       </div>
     </>
   );
