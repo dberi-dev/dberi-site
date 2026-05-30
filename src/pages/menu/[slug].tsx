@@ -236,7 +236,7 @@ export default function MenuPage() {
       id: item.id,
       name: item.name,
       price: item.price,
-      currency: menuData.currency,
+      currency: menuData?.currency || "USD",
       image_url: item.image_url,
       metadata: item.metadata,
     });
@@ -251,7 +251,7 @@ export default function MenuPage() {
       // Create line items for Stripe
       const lineItems = cart.items.map((item) => ({
         price_data: {
-          currency: menuData.currency.toLowerCase(),
+          currency: (menuData?.currency || "USD").toLowerCase(),
           product_data: {
             name: item.name,
             images: item.image_url ? [item.image_url] : [],
@@ -1168,7 +1168,7 @@ export default function MenuPage() {
                 {cart.items.map((item) => (
                   <div key={item.id} style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, fontSize: 13 }}>
                     <span style={{ color: "#6b7280" }}>{item.quantity}x {item.name}</span>
-<parameter name="new_string">                    <span style={{ color: "#111827", fontWeight: 600 }}>{formatPrice(item.price * item.quantity, menuData.currency)}</span>
+                    <span style={{ color: "#111827", fontWeight: 600 }}>{formatPrice(item.price * item.quantity, menuData.currency)}</span>
                   </div>
                 ))}
                 <div style={{ borderTop: "1px solid #e5e7eb", paddingTop: 8, marginTop: 8, display: "flex", justifyContent: "space-between" }}>
