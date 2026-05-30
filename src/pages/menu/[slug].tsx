@@ -55,6 +55,11 @@ function CardPaymentForm({
         }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: "Failed to create payment" }));
+        throw new Error(errorData.error || "Failed to create payment");
+      }
+
       const { clientSecret } = await response.json();
 
       // Confirm payment

@@ -23,9 +23,7 @@ export default async function handler(
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency: currency.toLowerCase(),
-      automatic_payment_methods: {
-        enabled: true,
-      },
+      payment_method_types: ["card"],
       metadata: {
         merchantName: merchantName || "Unknown Merchant",
         orderType: orderType?.type || "unknown",
@@ -38,6 +36,6 @@ export default async function handler(
     res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (err: any) {
     console.error("Payment Intent error:", err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message, details: err });
   }
 }
