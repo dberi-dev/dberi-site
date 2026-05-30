@@ -236,7 +236,7 @@ export default function MenuPage() {
       id: item.id,
       name: item.name,
       price: item.price,
-      currency: menuData?.currency || "USD",
+      currency: item.currency,
       image_url: item.image_url,
       metadata: item.metadata,
     });
@@ -750,7 +750,7 @@ export default function MenuPage() {
                                 color: "#ef4444",
                               }}
                             >
-                              {formatPrice(item.price, menuData.currency)}
+                              {formatPrice(item.price, item.currency)}
                             </span>
                           </div>
                           {(() => {
@@ -1014,7 +1014,7 @@ export default function MenuPage() {
                         {item.name}
                       </h3>
                       <p style={{ fontSize: 15, fontWeight: 700, color: "#ef4444", margin: "0 0 8px 0" }}>
-                        {formatPrice(item.price, menuData.currency)}
+                        {formatPrice(item.price, item.currency)}
                       </p>
                       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                         <button
@@ -1168,7 +1168,7 @@ export default function MenuPage() {
                 {cart.items.map((item) => (
                   <div key={item.id} style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, fontSize: 13 }}>
                     <span style={{ color: "#6b7280" }}>{item.quantity}x {item.name}</span>
-                    <span style={{ color: "#111827", fontWeight: 600 }}>{formatPrice(item.price * item.quantity, menuData.currency)}</span>
+                    <span style={{ color: "#111827", fontWeight: 600 }}>{formatPrice(item.price * item.quantity, item.currency)}</span>
                   </div>
                 ))}
                 <div style={{ borderTop: "1px solid #e5e7eb", paddingTop: 8, marginTop: 8, display: "flex", justifyContent: "space-between" }}>
