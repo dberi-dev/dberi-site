@@ -271,7 +271,7 @@ export default function MenuPage() {
       <Head>
         <title>{`${menuData.merchant_name} - Menu`}</title>
         <meta name="description" content={`View the menu for ${menuData.merchant_name}`} />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
       </Head>
 
       <div
@@ -824,7 +824,14 @@ export default function MenuPage() {
               </div>
 
               {/* Cart Items */}
-              <div style={{ flex: 1, padding: 16, overflowY: "auto", background: "#f9fafb" }}>
+              <div style={{
+                flex: 1,
+                padding: 16,
+                overflowY: "auto",
+                background: "#f9fafb",
+                WebkitOverflowScrolling: "touch",
+                minHeight: 0,
+              }}>
                 {cart.items.map((item) => (
                   <div
                     key={item.id}
@@ -934,7 +941,12 @@ export default function MenuPage() {
               </div>
 
               {/* Cart Footer */}
-              <div style={{ padding: 16, borderTop: "1px solid #e5e7eb", background: "#ffffff" }}>
+              <div style={{
+                padding: "16px 16px calc(16px + env(safe-area-inset-bottom))",
+                borderTop: "1px solid #e5e7eb",
+                background: "#ffffff",
+                flexShrink: 0,
+              }}>
                 <div style={{ marginBottom: 16 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
                     <span style={{ fontSize: 14, color: "#6b7280" }}>Subtotal ({cart.getItemCount()} items)</span>
@@ -987,7 +999,7 @@ export default function MenuPage() {
             <div
               style={{
                 minHeight: "100vh",
-                padding: "20px 24px 24px",
+                padding: "20px 24px calc(24px + env(safe-area-inset-bottom))",
                 maxWidth: 600,
                 margin: "0 auto",
               }}
