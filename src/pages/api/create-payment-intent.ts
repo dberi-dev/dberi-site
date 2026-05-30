@@ -21,9 +21,23 @@ export default async function handler(
     return res.status(400).json({ error: "Amount and currency are required" });
   }
 
-  // Validate amount is a positive integer
-  if (typeof amount !== "number" || amount <= 0 || !Number.isInteger(amount)) {
-    return res.status(400).json({ error: "Amount must be a positive integer in cents" });
+  // Validate amount is a positive number
+  if (typeof amount !== "number" || amount <= 0) {
+    return res.status(400).json({ error: "Amount must be a positive number" });
+  }
+
+  // Zero-decimal currencies (amounts in whole units, not cents)
+  const zeroDecimalCurrencies = [
+    'BIF', 'CLP', 'DJF', 'GNF', 'JPY', 'KMF', 'KRW', 'MGA',
+    'PYG', 'RWF', 'UGX', 'VND', 'VUV', 'XAF', 'XOF', 'XPF'
+  ];
+
+  const isZeroDecimal = zeroDecimalCurrencies.includes(currency.toUpperCase());
+
+  // For zero-decimal currencies, amount should be a whole number
+  // For other currencies, amount should be in cents (integer)
+  if (!isZeroDecimal && !Number.isInteger(amount)) {
+    return res.status(400).json({ error: "Amount must be an integer (in cents)" });
   }
 
   try {
@@ -56,8 +70,22 @@ export default async function handler(
       message: err.message,
       type: err.type,
       code: err.code,
+      param: err.param,
       raw: err.raw,
+      statusCode: err.statusCode,
     });
-    res.status(500).json({ error: err.message || "Failed to create payment intent" });
+
+    // Return detailed error for debugging
+    const errorMessage = err.message || "Failed to create payment intent";
+    const errorDetails = err.type ? `${err.type}: ${errorMessage}` : errorMessage;
+
+    res.status(500).json({
+      error: errorDetails,
+      details: process.env.NODE_ENV === 'development' ? {
+        type: err.type,
+        code: err.code,
+        param: err.param,
+      } : undefined
+    });
   }
 }
