@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import { useCart } from "../../hooks/useCart";
+import { FaApple, FaGoogle, FaCreditCard } from "react-icons/fa";
 
 interface MenuItem {
   id: string;
@@ -796,7 +797,7 @@ export default function MenuPage() {
                 width: "100%",
                 maxWidth: 450,
                 background: "#ffffff",
-                height: "100vh",
+                height: "100dvh",
                 display: "flex",
                 flexDirection: "column",
               }}
@@ -942,7 +943,7 @@ export default function MenuPage() {
 
               {/* Cart Footer */}
               <div style={{
-                padding: "16px 16px calc(16px + env(safe-area-inset-bottom))",
+                padding: "16px 16px calc(32px + env(safe-area-inset-bottom))",
                 borderTop: "1px solid #e5e7eb",
                 background: "#ffffff",
                 flexShrink: 0,
@@ -1110,9 +1111,7 @@ export default function MenuPage() {
                       "Processing..."
                     ) : (
                       <>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
+                        <FaApple size={20} />
                         Apple Pay
                       </>
                     )}
@@ -1141,10 +1140,7 @@ export default function MenuPage() {
                       "Processing..."
                     ) : (
                       <>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="#4285F4"/>
-                          <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5c1.66 0 3.13-.81 4.04-2.05l-1.63-1.22c-.59.81-1.54 1.35-2.41 1.35-1.66 0-3-1.34-3-3s1.34-3 3-3c.87 0 1.82.54 2.41 1.35l1.63-1.22C15.13 7.81 13.66 7 12 7z" fill="#fff"/>
-                        </svg>
+                        <FaGoogle size={18} />
                         Google Pay
                       </>
                     )}
@@ -1173,10 +1169,7 @@ export default function MenuPage() {
                       "Processing..."
                     ) : (
                       <>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <rect x="2" y="5" width="20" height="14" rx="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <line x1="2" y1="10" x2="22" y2="10" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
+                        <FaCreditCard size={18} />
                         Pay with Card
                       </>
                     )}
