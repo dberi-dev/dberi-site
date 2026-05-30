@@ -130,7 +130,7 @@ export default function MenuPage() {
             width: 40,
             height: 40,
             border: "3px solid rgba(0,0,0,0.1)",
-            borderTopColor: "#10b981",
+            borderTopColor: "#3b82f6",
             borderRadius: "50%",
             animation: "spin 1s linear infinite",
           }}
@@ -274,7 +274,7 @@ export default function MenuPage() {
                   onClick={() => cart.setOrderType({ type: "delivery" })}
                   style={{
                     padding: "6px 12px",
-                    background: cart.orderType?.type === "delivery" ? "#10b981" : "transparent",
+                    background: cart.orderType?.type === "delivery" ? "#3b82f6" : "transparent",
                     color: cart.orderType?.type === "delivery" ? "#ffffff" : "#6b7280",
                     border: "none",
                     borderRadius: 6,
@@ -291,7 +291,7 @@ export default function MenuPage() {
                   onClick={() => cart.setOrderType({ type: "pickup" })}
                   style={{
                     padding: "6px 12px",
-                    background: cart.orderType?.type === "pickup" ? "#10b981" : "transparent",
+                    background: cart.orderType?.type === "pickup" ? "#3b82f6" : "transparent",
                     color: cart.orderType?.type === "pickup" ? "#ffffff" : "#6b7280",
                     border: "none",
                     borderRadius: 6,
@@ -359,7 +359,7 @@ export default function MenuPage() {
           >
             {categories.map((category) => {
               const isSelected = selectedCategory === category;
-              const iconColor = isSelected ? "#10b981" : "#6b7280";
+              const iconColor = isSelected ? "#3b82f6" : "#6b7280";
 
               // Category icon component
               const getCategoryIcon = () => {
@@ -406,7 +406,7 @@ export default function MenuPage() {
                     width: "100%",
                     padding: "16px 8px",
                     border: "none",
-                    background: isSelected ? "#f0fdf4" : "transparent",
+                    background: isSelected ? "#eff6ff" : "transparent",
                     color: iconColor,
                     fontSize: 12,
                     fontWeight: isSelected ? 600 : 500,
@@ -536,31 +536,96 @@ export default function MenuPage() {
                               {formatPrice(item.price, item.currency)}
                             </span>
                           </div>
-                          <button
-                            onClick={() => handleAddToCart(item)}
-                            disabled={!item.is_available || (item.stock_quantity !== null && item.stock_quantity <= 0)}
-                            style={{
-                              padding: "6px 16px",
-                              background: item.is_available && (item.stock_quantity === null || item.stock_quantity > 0)
-                                ? "#10b981"
-                                : "#e5e7eb",
-                              color: item.is_available && (item.stock_quantity === null || item.stock_quantity > 0)
-                                ? "#ffffff"
-                                : "#9ca3af",
-                              border: "none",
-                              borderRadius: 6,
-                              fontSize: 13,
-                              fontWeight: 600,
-                              cursor: item.is_available && (item.stock_quantity === null || item.stock_quantity > 0)
-                                ? "pointer"
-                                : "not-allowed",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {!item.is_available || (item.stock_quantity !== null && item.stock_quantity <= 0)
-                              ? "Sold Out"
-                              : "+"}
-                          </button>
+                          {(() => {
+                            const cartItem = cart.items.find(i => i.id === item.id);
+                            const isAvailable = item.is_available && (item.stock_quantity === null || item.stock_quantity > 0);
+
+                            if (!isAvailable) {
+                              return (
+                                <button
+                                  disabled
+                                  style={{
+                                    padding: "6px 16px",
+                                    background: "#e5e7eb",
+                                    color: "#9ca3af",
+                                    border: "none",
+                                    borderRadius: 6,
+                                    fontSize: 13,
+                                    fontWeight: 600,
+                                    cursor: "not-allowed",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  Sold Out
+                                </button>
+                              );
+                            }
+
+                            if (cartItem) {
+                              return (
+                                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                  <button
+                                    onClick={() => cart.updateQuantity(item.id, cartItem.quantity - 1)}
+                                    style={{
+                                      width: 28,
+                                      height: 28,
+                                      borderRadius: 6,
+                                      border: "1px solid #e5e7eb",
+                                      background: "#ffffff",
+                                      cursor: "pointer",
+                                      fontSize: 16,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      color: "#6b7280",
+                                    }}
+                                  >
+                                    −
+                                  </button>
+                                  <span style={{ fontSize: 14, fontWeight: 600, minWidth: 20, textAlign: "center", color: "#111827" }}>
+                                    {cartItem.quantity}
+                                  </span>
+                                  <button
+                                    onClick={() => cart.updateQuantity(item.id, cartItem.quantity + 1)}
+                                    style={{
+                                      width: 28,
+                                      height: 28,
+                                      borderRadius: 6,
+                                      border: "1px solid #3b82f6",
+                                      background: "#3b82f6",
+                                      cursor: "pointer",
+                                      fontSize: 16,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      color: "#ffffff",
+                                    }}
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              );
+                            }
+
+                            return (
+                              <button
+                                onClick={() => handleAddToCart(item)}
+                                style={{
+                                  padding: "6px 16px",
+                                  background: "#3b82f6",
+                                  color: "#ffffff",
+                                  border: "none",
+                                  borderRadius: 6,
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  cursor: "pointer",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                +
+                              </button>
+                            );
+                          })()}
                         </div>
                       </div>
                     </div>
@@ -580,14 +645,14 @@ export default function MenuPage() {
               bottom: 16,
               left: 16,
               right: 16,
-              background: "#10b981",
+              background: "#3b82f6",
               color: "#ffffff",
               padding: "14px 16px",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
               cursor: "pointer",
-              boxShadow: "0 4px 12px rgba(16, 185, 129, 0.4)",
+              boxShadow: "0 4px 12px rgba(59, 130, 246, 0.4)",
               zIndex: 30,
               borderRadius: 16,
             }}
@@ -604,7 +669,7 @@ export default function MenuPage() {
                   justifyContent: "center",
                   fontWeight: 700,
                   fontSize: 16,
-                  color: "#10b981",
+                  color: "#3b82f6",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
                 }}
               >
@@ -748,8 +813,8 @@ export default function MenuPage() {
                             width: 28,
                             height: 28,
                             borderRadius: 6,
-                            border: "1px solid #10b981",
-                            background: "#10b981",
+                            border: "1px solid #3b82f6",
+                            background: "#3b82f6",
                             cursor: "pointer",
                             fontSize: 16,
                             display: "flex",
@@ -804,7 +869,7 @@ export default function MenuPage() {
                   style={{
                     width: "100%",
                     padding: "14px",
-                    background: "#10b981",
+                    background: "#3b82f6",
                     color: "#ffffff",
                     border: "none",
                     borderRadius: 8,
@@ -859,7 +924,7 @@ export default function MenuPage() {
                   }}
                   style={{
                     padding: "16px",
-                    background: cart.orderType?.type === "pickup" ? "#10b981" : "#f3f4f6",
+                    background: cart.orderType?.type === "pickup" ? "#3b82f6" : "#f3f4f6",
                     color: cart.orderType?.type === "pickup" ? "#ffffff" : "#111827",
                     border: "none",
                     borderRadius: 12,
@@ -881,7 +946,7 @@ export default function MenuPage() {
                   }}
                   style={{
                     padding: "16px",
-                    background: cart.orderType?.type === "delivery" ? "#10b981" : "#f3f4f6",
+                    background: cart.orderType?.type === "delivery" ? "#3b82f6" : "#f3f4f6",
                     color: cart.orderType?.type === "delivery" ? "#ffffff" : "#111827",
                     border: "none",
                     borderRadius: 12,
