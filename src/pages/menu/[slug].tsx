@@ -239,62 +239,72 @@ export default function MenuPage() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <button
-                onClick={() => router.back()}
+            <div>
+              <h1
                 style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  padding: 4,
-                  display: "flex",
-                  alignItems: "center",
+                  fontSize: 16,
+                  fontWeight: 600,
+                  color: "#111827",
+                  margin: 0,
                 }}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2">
-                  <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              <div>
-                <h1
-                  style={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: "#111827",
-                    margin: 0,
-                  }}
-                >
-                  {menuData.merchant_name}
-                </h1>
-                {cart.orderType && (
-                  <p style={{ fontSize: 12, color: "#6b7280", margin: 0 }}>
-                    {cart.orderType.type === "table" && `Table ${cart.orderType.tableNumber}`}
-                    {cart.orderType.type === "pickup" && "Pickup"}
-                    {cart.orderType.type === "delivery" && "Delivery"}
-                  </p>
-                )}
-              </div>
+                {menuData.merchant_name}
+              </h1>
+              {cart.orderType && (
+                <p style={{ fontSize: 12, color: "#6b7280", margin: 0 }}>
+                  {cart.orderType.type === "table" && `Table ${cart.orderType.tableNumber}`}
+                  {cart.orderType.type === "pickup" && "Pickup"}
+                  {cart.orderType.type === "delivery" && "Delivery"}
+                </p>
+              )}
             </div>
 
             {!table && (
-              <button
-                onClick={() => setShowOrderTypeModal(true)}
+              <div
                 style={{
-                  padding: "6px 12px",
-                  background: cart.orderType ? "#10b981" : "#6366f1",
-                  color: "#ffffff",
-                  border: "none",
-                  borderRadius: 6,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  background: "#f3f4f6",
+                  borderRadius: 8,
+                  padding: 3,
                 }}
               >
-                {cart.orderType
-                  ? (cart.orderType.type === "pickup" ? "Pickup" : "Delivery")
-                  : "Select Order Type"}
-              </button>
+                <button
+                  onClick={() => cart.setOrderType({ type: "delivery" })}
+                  style={{
+                    padding: "6px 12px",
+                    background: cart.orderType?.type === "delivery" ? "#10b981" : "transparent",
+                    color: cart.orderType?.type === "delivery" ? "#ffffff" : "#6b7280",
+                    border: "none",
+                    borderRadius: 6,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  Delivery
+                </button>
+                <button
+                  onClick={() => cart.setOrderType({ type: "pickup" })}
+                  style={{
+                    padding: "6px 12px",
+                    background: cart.orderType?.type === "pickup" ? "#10b981" : "transparent",
+                    color: cart.orderType?.type === "pickup" ? "#ffffff" : "#6b7280",
+                    border: "none",
+                    borderRadius: 6,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  Pickup
+                </button>
+              </div>
             )}
           </div>
 
@@ -584,15 +594,17 @@ export default function MenuPage() {
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <div
                 style={{
-                  width: 36,
-                  height: 36,
+                  width: 40,
+                  height: 40,
                   borderRadius: "50%",
-                  background: "#059669",
+                  background: "#ffffff",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontWeight: 700,
-                  fontSize: 14,
+                  fontSize: 16,
+                  color: "#10b981",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
                 }}
               >
                 {cart.getItemCount()}
@@ -785,11 +797,7 @@ export default function MenuPage() {
                 </div>
                 <button
                   onClick={() => {
-                    if (needsOrderType) {
-                      setShowOrderTypeModal(true);
-                    } else {
-                      setShowCheckout(true);
-                    }
+                    setShowCheckout(true);
                     setShowCart(false);
                   }}
                   style={{
@@ -804,7 +812,7 @@ export default function MenuPage() {
                     cursor: "pointer",
                   }}
                 >
-                  {needsOrderType ? "Select Order Type & Checkout" : "Checkout"}
+                  Checkout
                 </button>
               </div>
             </div>
