@@ -52,6 +52,9 @@ export default function MenuPage() {
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [showTableSelector, setShowTableSelector] = useState(false);
   const [hasSelectedTable, setHasSelectedTable] = useState(false);
+  const [showCheckoutForm, setShowCheckoutForm] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
   const categoryRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
   const cart = useCart(typeof slug === "string" ? slug : undefined);
@@ -104,10 +107,9 @@ export default function MenuPage() {
   };
 
   const handleCheckout = async () => {
-    if (checkoutLoading || cart.items.length === 0) return;
+    if (checkoutLoading || cart.items.length === 0 || !customerName) return;
 
     setCheckoutLoading(true);
-    setShowCart(false);
 
     try {
       // Create line items for Stripe
@@ -133,6 +135,8 @@ export default function MenuPage() {
           lineItems,
           merchantName: menuData?.merchant_name,
           orderType: cart.orderType,
+          customerName,
+          customerEmail: customerEmail || undefined,
         }),
       });
 
@@ -304,7 +308,8 @@ export default function MenuPage() {
               </h1>
               {cart.orderType && (
                 <p style={{ fontSize: 12, color: "#6b7280", margin: 0 }}>
-                  {cart.orderType.type === "table" && `Table ${cart.orderType.tableNumber}`}
+                  {cart.orderType.type === "table" && cart.orderType.tableNumber === "N/A" && "Takeaway"}
+                  {cart.orderType.type === "table" && cart.orderType.tableNumber !== "N/A" && `Table ${cart.orderType.tableNumber}`}
                   {cart.orderType.type === "pickup" && "Pickup"}
                   {cart.orderType.type === "delivery" && "Delivery"}
                 </p>
@@ -754,7 +759,8 @@ export default function MenuPage() {
               <div>
                 {cart.orderType && (
                   <div style={{ fontSize: 11, opacity: 0.85, marginBottom: 2 }}>
-                    {cart.orderType.type === "table" && `Table ${cart.orderType.tableNumber}`}
+                    {cart.orderType.type === "table" && cart.orderType.tableNumber === "N/A" && "Takeaway"}
+                    {cart.orderType.type === "table" && cart.orderType.tableNumber !== "N/A" && `Table ${cart.orderType.tableNumber}`}
                     {cart.orderType.type === "pickup" && "Pickup"}
                     {cart.orderType.type === "delivery" && "Delivery"}
                   </div>
@@ -791,7 +797,6 @@ export default function MenuPage() {
                 maxWidth: 450,
                 background: "#ffffff",
                 height: "100vh",
-                overflowY: "auto",
                 display: "flex",
                 flexDirection: "column",
               }}
@@ -945,42 +950,200 @@ export default function MenuPage() {
                   </div>
                 </div>
                 <button
-                  onClick={handleCheckout}
-                  disabled={checkoutLoading}
+                  onClick={() => {
+                    setShowCart(false);
+                    setShowCheckoutForm(true);
+                  }}
                   style={{
                     width: "100%",
                     padding: "14px",
-                    background: checkoutLoading ? "#93c5fd" : "#3b82f6",
+                    background: "#3b82f6",
                     color: "#ffffff",
                     border: "none",
                     borderRadius: 8,
                     fontSize: 16,
                     fontWeight: 600,
-                    cursor: checkoutLoading ? "not-allowed" : "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
+                    cursor: "pointer",
                   }}
                 >
-                  {checkoutLoading ? (
-                    <>
-                      <div
-                        style={{
-                          width: 16,
-                          height: 16,
-                          border: "2px solid rgba(255,255,255,0.3)",
-                          borderTopColor: "#ffffff",
-                          borderRadius: "50%",
-                          animation: "spin 0.8s linear infinite",
-                        }}
-                      />
-                      <span>Processing...</span>
-                    </>
-                  ) : (
-                    "Checkout"
-                  )}
+                  Checkout
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Checkout Form Modal */}
+        {showCheckoutForm && (
+          <div
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.5)",
+              zIndex: 50,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 16,
+              overflowY: "auto",
+            }}
+          >
+            <div
+              style={{
+                background: "#ffffff",
+                borderRadius: 16,
+                padding: 24,
+                maxWidth: 450,
+                width: "100%",
+                maxHeight: "90vh",
+                overflowY: "auto",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                <h2 style={{ fontSize: 20, fontWeight: 700, color: "#111827", margin: 0 }}>Checkout</h2>
+                <button
+                  onClick={() => {
+                    setShowCheckoutForm(false);
+                    setShowCart(true);
+                  }}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    fontSize: 24,
+                    cursor: "pointer",
+                    color: "#6b7280",
+                    padding: 0,
+                    width: 32,
+                    height: 32,
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+
+              {/* Order Summary */}
+              <div style={{ marginBottom: 20, padding: 16, background: "#f9fafb", borderRadius: 8 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#111827", marginBottom: 12 }}>Order Summary</div>
+                {cart.items.map((item) => (
+                  <div key={item.id} style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, fontSize: 13 }}>
+                    <span style={{ color: "#6b7280" }}>{item.quantity}x {item.name}</span>
+                    <span style={{ color: "#111827", fontWeight: 600 }}>{formatPrice(item.price * item.quantity, item.currency)}</span>
+                  </div>
+                ))}
+                <div style={{ borderTop: "1px solid #e5e7eb", paddingTop: 8, marginTop: 8, display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: 16, fontWeight: 700, color: "#111827" }}>Total</span>
+                  <span style={{ fontSize: 18, fontWeight: 700, color: "#ef4444" }}>
+                    {formatPrice(cart.getTotal(), menuData.currency)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Customer Info Form */}
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ display: "block", fontSize: 14, fontWeight: 600, color: "#111827", marginBottom: 8 }}>
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  placeholder="Enter your name"
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 8,
+                    fontSize: 14,
+                    outline: "none",
+                    marginBottom: 16,
+                  }}
+                />
+                <label style={{ display: "block", fontSize: 14, fontWeight: 600, color: "#111827", marginBottom: 8 }}>
+                  Email (Optional)
+                </label>
+                <input
+                  type="email"
+                  value={customerEmail}
+                  onChange={(e) => setCustomerEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 8,
+                    fontSize: 14,
+                    outline: "none",
+                  }}
+                />
+              </div>
+
+              {/* Payment Methods */}
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#111827", marginBottom: 12 }}>Payment Method</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <button
+                    onClick={handleCheckout}
+                    disabled={!customerName || checkoutLoading}
+                    style={{
+                      width: "100%",
+                      padding: "14px",
+                      background: "#000000",
+                      color: "#ffffff",
+                      border: "none",
+                      borderRadius: 8,
+                      fontSize: 16,
+                      fontWeight: 600,
+                      cursor: !customerName || checkoutLoading ? "not-allowed" : "pointer",
+                      opacity: !customerName || checkoutLoading ? 0.5 : 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                    }}
+                  >
+                    {checkoutLoading ? "Processing..." : " Pay"}
+                  </button>
+                  <button
+                    onClick={handleCheckout}
+                    disabled={!customerName || checkoutLoading}
+                    style={{
+                      width: "100%",
+                      padding: "14px",
+                      background: "#ffffff",
+                      color: "#000000",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: 8,
+                      fontSize: 16,
+                      fontWeight: 600,
+                      cursor: !customerName || checkoutLoading ? "not-allowed" : "pointer",
+                      opacity: !customerName || checkoutLoading ? 0.5 : 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                    }}
+                  >
+                    {checkoutLoading ? "Processing..." : "G Pay"}
+                  </button>
+                  <button
+                    onClick={handleCheckout}
+                    disabled={!customerName || checkoutLoading}
+                    style={{
+                      width: "100%",
+                      padding: "14px",
+                      background: "#3b82f6",
+                      color: "#ffffff",
+                      border: "none",
+                      borderRadius: 8,
+                      fontSize: 16,
+                      fontWeight: 600,
+                      cursor: !customerName || checkoutLoading ? "not-allowed" : "pointer",
+                      opacity: !customerName || checkoutLoading ? 0.5 : 1,
+                    }}
+                  >
+                    {checkoutLoading ? "Processing..." : "Pay with Card"}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1078,7 +1241,7 @@ export default function MenuPage() {
                   cursor: "pointer",
                 }}
               >
-                N/A (Not at table)
+                Takeaway
               </button>
             </div>
           </div>

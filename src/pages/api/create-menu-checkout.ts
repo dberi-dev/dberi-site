@@ -13,7 +13,7 @@ export default async function handler(
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { lineItems, merchantName, orderType } = req.body;
+  const { lineItems, merchantName, orderType, customerName, customerEmail } = req.body;
 
   if (!lineItems || !Array.isArray(lineItems) || lineItems.length === 0) {
     return res.status(400).json({ error: "Line items are required" });
@@ -24,10 +24,12 @@ export default async function handler(
       mode: "payment",
       payment_method_types: ["card"],
       line_items: lineItems,
+      customer_email: customerEmail || undefined,
       metadata: {
         merchantName: merchantName || "Unknown Merchant",
         orderType: orderType?.type || "unknown",
         tableNumber: orderType?.tableNumber || "",
+        customerName: customerName || "",
       },
       success_url: `${req.headers.origin || "https://dberi.com"}/menu/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin || "https://dberi.com"}/menu/${merchantName}?canceled=true`,
