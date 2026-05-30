@@ -124,7 +124,14 @@ function CardPaymentForm({
           cursor: processing ? "not-allowed" : "pointer",
         }}
       >
-        {processing ? "Processing..." : `Pay ${CURRENCY_SYMBOLS[currency] || "$"}${(amount / 100).toFixed(2)}`}
+        {processing ? "Processing..." : (() => {
+          const symbol = CURRENCY_SYMBOLS[currency] || "$";
+          const isZeroDecimal = ZERO_DECIMAL_CURRENCIES.includes(currency.toUpperCase());
+          const formattedAmount = isZeroDecimal
+            ? amount.toLocaleString()
+            : (amount / 100).toFixed(2);
+          return `Pay ${symbol}${formattedAmount}`;
+        })()}
       </button>
     </form>
   );
@@ -161,6 +168,12 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   TRY: "₺", PLN: "zł", CZK: "Kč", HUF: "Ft",
   ILS: "₪", RUB: "₽", UAH: "₴",
 };
+
+// Currencies that don't use decimal places (amounts are in whole units)
+const ZERO_DECIMAL_CURRENCIES = [
+  "BIF", "CLP", "DJF", "GNF", "JPY", "KMF", "KRW", "MGA",
+  "PYG", "RWF", "UGX", "VND", "VUV", "XAF", "XOF", "XPF"
+];
 
 function getIconEmoji(emoji: string | null | undefined): string {
   if (!emoji) return "📦";
@@ -228,7 +241,15 @@ export default function MenuPage() {
 
   const formatPrice = (price: number, currency: string) => {
     const symbol = CURRENCY_SYMBOLS[currency] || "$";
-    return `${symbol}${(price / 100).toFixed(2)}`;
+    const isZeroDecimal = ZERO_DECIMAL_CURRENCIES.includes(currency.toUpperCase());
+
+    if (isZeroDecimal) {
+      // Zero-decimal currencies: use whole units (¥450, not ¥450.00)
+      return `${symbol}${price.toLocaleString()}`;
+    } else {
+      // Regular currencies: divide by 100 to get dollars/euros ($3.00)
+      return `${symbol}${(price / 100).toFixed(2)}`;
+    }
   };
 
   const handleAddToCart = (item: MenuItem) => {
