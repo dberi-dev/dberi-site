@@ -347,36 +347,73 @@ export default function MenuPage() {
               flexShrink: 0,
             }}
           >
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => scrollToCategory(category)}
-                style={{
-                  width: "100%",
-                  padding: "16px 8px",
-                  border: "none",
-                  background: selectedCategory === category ? "#f0fdf4" : "transparent",
-                  color: selectedCategory === category ? "#10b981" : "#6b7280",
-                  fontSize: 12,
-                  fontWeight: selectedCategory === category ? 600 : 500,
-                  cursor: "pointer",
-                  textAlign: "center",
-                  borderBottom: "1px solid #f3f4f6",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: 4,
-                }}
-              >
-                <div style={{ fontSize: 20 }}>
-                  {category === "Drinks" && "🥤"}
-                  {category === "Food" && "🍔"}
-                  {category === "Desserts" && "🍰"}
-                  {!["Drinks", "Food", "Desserts"].includes(category) && "📦"}
-                </div>
-                <span style={{ lineHeight: 1.2, wordBreak: "break-word" }}>{category}</span>
-              </button>
-            ))}
+            {categories.map((category) => {
+              const isSelected = selectedCategory === category;
+              const iconColor = isSelected ? "#10b981" : "#6b7280";
+
+              // Category icon component
+              const getCategoryIcon = () => {
+                switch (category) {
+                  case "Drinks":
+                    return (
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="2">
+                        <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" strokeLinecap="round" strokeLinejoin="round"/>
+                        <line x1="6" y1="1" x2="6" y2="4" strokeLinecap="round" strokeLinejoin="round"/>
+                        <line x1="10" y1="1" x2="10" y2="4" strokeLinecap="round" strokeLinejoin="round"/>
+                        <line x1="14" y1="1" x2="14" y2="4" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    );
+                  case "Food":
+                    return (
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="2">
+                        <path d="M12 2a5 5 0 0 0-5 5v1a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M5.2 15.5A7.95 7.95 0 0 0 12 20a7.95 7.95 0 0 0 6.8-4.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M5 8v13h14V8" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    );
+                  case "Desserts":
+                    return (
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="2">
+                        <path d="M7 21h10M12 21v-7M5.5 14h13c1.5-4.5 0-9-6.5-9S3 9.5 4.5 14z" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 5v2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    );
+                  default:
+                    return (
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={iconColor} strokeWidth="2">
+                        <circle cx="12" cy="12" r="10" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12 8v8M8 12h8" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    );
+                }
+              };
+
+              return (
+                <button
+                  key={category}
+                  onClick={() => scrollToCategory(category)}
+                  style={{
+                    width: "100%",
+                    padding: "16px 8px",
+                    border: "none",
+                    background: isSelected ? "#f0fdf4" : "transparent",
+                    color: iconColor,
+                    fontSize: 12,
+                    fontWeight: isSelected ? 600 : 500,
+                    cursor: "pointer",
+                    textAlign: "center",
+                    borderBottom: "1px solid #f3f4f6",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 4,
+                  }}
+                >
+                  {getCategoryIcon()}
+                  <span style={{ lineHeight: 1.2, wordBreak: "break-word" }}>{category}</span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Menu Items */}
