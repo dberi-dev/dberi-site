@@ -124,7 +124,7 @@ function CardPaymentForm({
           cursor: processing ? "not-allowed" : "pointer",
         }}
       >
-        {processing ? "Processing..." : `Pay $${(amount / 100).toFixed(2)}`}
+        {processing ? "Processing..." : `Pay ${CURRENCY_SYMBOLS[currency] || "$"}${(amount / 100).toFixed(2)}`}
       </button>
     </form>
   );
@@ -151,7 +151,15 @@ interface MenuData {
 }
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
-  USD: "$", BSD: "$", CAD: "$", EUR: "€", GBP: "£", JPY: "¥", KRW: "₩", CNY: "¥", INR: "₹", AUD: "$", NZD: "$",
+  USD: "$", BSD: "$", CAD: "$", AUD: "$", NZD: "$", SGD: "$", HKD: "$",
+  EUR: "€", GBP: "£",
+  JPY: "¥", CNY: "¥", KRW: "₩",
+  INR: "₹", BRL: "R$", MXN: "$", ZAR: "R",
+  CHF: "CHF", SEK: "kr", NOK: "kr", DKK: "kr",
+  THB: "฿", PHP: "₱", IDR: "Rp", MYR: "RM",
+  AED: "د.إ", SAR: "﷼", QAR: "﷼", KWD: "د.ك",
+  TRY: "₺", PLN: "zł", CZK: "Kč", HUF: "Ft",
+  ILS: "₪", RUB: "₽", UAH: "₴",
 };
 
 function getIconEmoji(emoji: string | null | undefined): string {
