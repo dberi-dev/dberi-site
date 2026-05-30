@@ -66,13 +66,13 @@ export default async function handler(
 
     res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (err: any) {
-    console.error("Payment Intent error details:", {
+    console.error("Payment Intent Creation Failed:", {
       message: err.message,
       type: err.type,
       code: err.code,
       param: err.param,
-      raw: err.raw,
       statusCode: err.statusCode,
+      requestParams: paymentIntentParams,
     });
 
     // Return detailed error for debugging
@@ -81,11 +81,12 @@ export default async function handler(
 
     res.status(500).json({
       error: errorDetails,
-      details: process.env.NODE_ENV === 'development' ? {
+      stripeError: {
         type: err.type,
         code: err.code,
         param: err.param,
-      } : undefined
+        message: err.message,
+      }
     });
   }
 }
