@@ -52,6 +52,7 @@ export default function MenuPage() {
   const [showCart, setShowCart] = useState(false);
   const [showOrderTypeModal, setShowOrderTypeModal] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
   const categoryRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
   const cart = useCart(typeof slug === "string" ? slug : undefined);
@@ -106,6 +107,7 @@ export default function MenuPage() {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
     setSelectedCategory(category);
+    setShowSidebar(false);
   };
 
   if (loading) {
@@ -208,7 +210,31 @@ export default function MenuPage() {
       <Head>
         <title>{`${menuData.merchant_name} - Menu`}</title>
         <meta name="description" content={`View the menu for ${menuData.merchant_name}`} />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
       </Head>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .desktop-sidebar {
+            display: none !important;
+          }
+          .menu-grid {
+            grid-template-columns: 1fr !important;
+            padding: 16px !important;
+          }
+          .header-content {
+            padding: 12px 16px !important;
+          }
+          .search-container {
+            margin-top: 12px;
+          }
+        }
+        @media (min-width: 769px) {
+          .mobile-menu-button {
+            display: none !important;
+          }
+        }
+      `}</style>
 
       <div
         style={{
@@ -220,6 +246,7 @@ export default function MenuPage() {
       >
         {/* Header */}
         <div
+          className="header-content"
           style={{
             background: "#ffffff",
             borderBottom: "1px solid #e5e7eb",
@@ -231,24 +258,45 @@ export default function MenuPage() {
         >
           <div style={{ maxWidth: 1400, margin: "0 auto" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-              <div>
-                <h1
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                {/* Mobile Menu Button */}
+                <button
+                  className="mobile-menu-button"
+                  onClick={() => setShowSidebar(!showSidebar)}
                   style={{
-                    fontSize: 24,
-                    fontWeight: 700,
-                    color: "#111827",
-                    marginBottom: 4,
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 8,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  {menuData.merchant_name}
-                </h1>
-                {cart.orderType && (
-                  <p style={{ fontSize: 13, color: "#6b7280" }}>
-                    {cart.orderType.type === "table" && `Table ${cart.orderType.tableNumber}`}
-                    {cart.orderType.type === "pickup" && "Pickup"}
-                    {cart.orderType.type === "delivery" && "Delivery"}
-                  </p>
-                )}
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2">
+                    <path d="M3 12h18M3 6h18M3 18h18" strokeLinecap="round" />
+                  </svg>
+                </button>
+
+                <div>
+                  <h1
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 700,
+                      color: "#111827",
+                      marginBottom: 4,
+                    }}
+                  >
+                    {menuData.merchant_name}
+                  </h1>
+                  {cart.orderType && (
+                    <p style={{ fontSize: 13, color: "#6b7280" }}>
+                      {cart.orderType.type === "table" && `Table ${cart.orderType.tableNumber}`}
+                      {cart.orderType.type === "pickup" && "Pickup"}
+                      {cart.orderType.type === "delivery" && "Delivery"}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* Order Type Selector (if not in-store) */}
@@ -264,6 +312,7 @@ export default function MenuPage() {
                     fontSize: 14,
                     fontWeight: 600,
                     cursor: "pointer",
+                    whiteSpace: "nowrap",
                   }}
                 >
                   {cart.orderType
@@ -274,7 +323,7 @@ export default function MenuPage() {
             </div>
 
             {/* Search Bar */}
-            <div style={{ position: "relative" }}>
+            <div className="search-container" style={{ position: "relative" }}>
               <input
                 type="text"
                 placeholder="Search menu..."
@@ -308,9 +357,10 @@ export default function MenuPage() {
         </div>
 
         {/* Main Content */}
-        <div style={{ flex: 1, display: "flex", maxWidth: 1400, margin: "0 auto", width: "100%" }}>
-          {/* Sidebar */}
+        <div style={{ flex: 1, display: "flex", maxWidth: 1400, margin: "0 auto", width: "100%", position: "relative" }}>
+          {/* Desktop Sidebar */}
           <div
+            className="desktop-sidebar"
             style={{
               width: 220,
               background: "#ffffff",
@@ -349,8 +399,72 @@ export default function MenuPage() {
             ))}
           </div>
 
+          {/* Mobile Sidebar Overlay */}
+          {showSidebar && (
+            <div
+              style={{
+                position: "fixed",
+                inset: 0,
+                background: "rgba(0,0,0,0.5)",
+                zIndex: 25,
+              }}
+              onClick={() => setShowSidebar(false)}
+            >
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  width: "80%",
+                  maxWidth: 300,
+                  background: "#ffffff",
+                  height: "100vh",
+                  overflowY: "auto",
+                  padding: "20px 0",
+                }}
+              >
+                <div style={{ padding: "0 16px", marginBottom: 20, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <p style={{ fontSize: 12, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: 0.5 }}>
+                    Categories
+                  </p>
+                  <button
+                    onClick={() => setShowSidebar(false)}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      fontSize: 24,
+                      cursor: "pointer",
+                      color: "#6b7280",
+                      padding: 0,
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => scrollToCategory(category)}
+                    style={{
+                      width: "100%",
+                      padding: "12px 16px",
+                      border: "none",
+                      background: selectedCategory === category ? "#f3f4f6" : "transparent",
+                      color: selectedCategory === category ? "#111827" : "#6b7280",
+                      fontSize: 14,
+                      fontWeight: selectedCategory === category ? 600 : 500,
+                      cursor: "pointer",
+                      textAlign: "left",
+                      borderLeft: selectedCategory === category ? "3px solid #6366f1" : "3px solid transparent",
+                    }}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Menu Items */}
-          <div style={{ flex: 1, padding: "24px", overflowY: "auto", paddingBottom: 100 }}>
+          <div className="menu-grid" style={{ flex: 1, padding: "24px", overflowY: "auto", paddingBottom: 120 }}>
             {Object.entries(itemsByCategory).map(([category, categoryItems]) => (
               <div
                 key={category}
@@ -396,7 +510,7 @@ export default function MenuPage() {
                           alt={item.name}
                           style={{
                             width: "100%",
-                            height: 140,
+                            height: 160,
                             objectFit: "cover",
                           }}
                         />
@@ -404,7 +518,7 @@ export default function MenuPage() {
                         <div
                           style={{
                             width: "100%",
-                            height: 140,
+                            height: 160,
                             background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                             display: "flex",
                             alignItems: "center",
@@ -506,8 +620,8 @@ export default function MenuPage() {
               color: "#ffffff",
               border: "none",
               borderRadius: 999,
-              padding: "16px 24px",
-              fontSize: 16,
+              padding: "14px 20px",
+              fontSize: 15,
               fontWeight: 600,
               cursor: "pointer",
               boxShadow: "0 10px 30px rgba(99, 102, 241, 0.4)",
@@ -515,6 +629,7 @@ export default function MenuPage() {
               alignItems: "center",
               gap: 10,
               zIndex: 30,
+              maxWidth: "calc(100vw - 48px)",
             }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -528,12 +643,13 @@ export default function MenuPage() {
               <circle cx="9" cy="21" r="1.5" fill="currentColor" />
               <circle cx="17" cy="21" r="1.5" fill="currentColor" />
             </svg>
-            <span>View Cart ({cart.getItemCount()})</span>
+            <span style={{ whiteSpace: "nowrap" }}>Cart ({cart.getItemCount()})</span>
             <span style={{
               background: "rgba(255,255,255,0.2)",
               padding: "4px 10px",
               borderRadius: 999,
               fontSize: 14,
+              whiteSpace: "nowrap",
             }}>
               {formatPrice(cart.getTotal(), menuData.currency)}
             </span>
@@ -823,7 +939,6 @@ export default function MenuPage() {
               amount={cart.getTotal() / 100}
               currency={menuData.currency}
               onPay={() => {
-                // Handle payment success
                 console.log("Payment initiated");
               }}
               onClose={() => {
