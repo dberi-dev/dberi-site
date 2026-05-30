@@ -3,6 +3,127 @@ import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import { useCart } from "../../hooks/useCart";
 import { FaApple, FaGoogle, FaCreditCard } from "react-icons/fa";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+
+function CardPaymentForm({
+  amount,
+  currency,
+  customerName,
+  customerEmail,
+  merchantName,
+  orderType,
+  onSuccess,
+  onError
+}: {
+  amount: number;
+  currency: string;
+  customerName: string;
+  customerEmail: string;
+  merchantName: string;
+  orderType: any;
+  onSuccess: () => void;
+  onError: (error: string) => void;
+}) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [processing, setProcessing] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setProcessing(true);
+
+    try {
+      // Create Payment Intent
+      const response = await fetch("/api/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount,
+          currency,
+          customerName,
+          customerEmail,
+          merchantName,
+          orderType,
+        }),
+      });
+
+      const { clientSecret } = await response.json();
+
+      // Confirm payment
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) return;
+
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: customerName,
+            email: customerEmail || undefined,
+          },
+        },
+      });
+
+      if (result.error) {
+        onError(result.error.message || "Payment failed");
+        setProcessing(false);
+      } else {
+        onSuccess();
+      }
+    } catch (err: any) {
+      onError(err.message || "Payment failed");
+      setProcessing(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div style={{
+        padding: "16px",
+        border: "1px solid #e5e7eb",
+        borderRadius: 8,
+        marginBottom: 16,
+        background: "#f9fafb",
+      }}>
+        <CardElement options={{
+          style: {
+            base: {
+              fontSize: "16px",
+              color: "#111827",
+              "::placeholder": {
+                color: "#9ca3af",
+              },
+            },
+          },
+        }} />
+      </div>
+      <button
+        type="submit"
+        disabled={!stripe || processing}
+        style={{
+          width: "100%",
+          padding: "14px",
+          background: processing ? "#93c5fd" : "#3b82f6",
+          color: "#ffffff",
+          border: "none",
+          borderRadius: 8,
+          fontSize: 16,
+          fontWeight: 600,
+          cursor: processing ? "not-allowed" : "pointer",
+        }}
+      >
+        {processing ? "Processing..." : `Pay $${(amount / 100).toFixed(2)}`}
+      </button>
+    </form>
+  );
+}
 
 interface MenuItem {
   id: string;
@@ -54,6 +175,7 @@ export default function MenuPage() {
   const [showTableSelector, setShowTableSelector] = useState(false);
   const [hasSelectedTable, setHasSelectedTable] = useState(false);
   const [showCheckoutForm, setShowCheckoutForm] = useState(false);
+  const [showCardPayment, setShowCardPayment] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const categoryRefs = useRef<{ [key: string]: HTMLElement | null }>({});
@@ -1086,95 +1208,132 @@ export default function MenuPage() {
               {/* Payment Methods */}
               <div style={{ marginBottom: 20 }}>
                 <div style={{ fontSize: 14, fontWeight: 600, color: "#111827", marginBottom: 12 }}>Payment Method</div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                  <button
-                    onClick={handleCheckout}
-                    disabled={!customerName || checkoutLoading}
-                    style={{
-                      width: "100%",
-                      padding: "14px",
-                      background: "#000000",
-                      color: "#ffffff",
-                      border: "none",
-                      borderRadius: 8,
-                      fontSize: 16,
-                      fontWeight: 600,
-                      cursor: !customerName || checkoutLoading ? "not-allowed" : "pointer",
-                      opacity: !customerName || checkoutLoading ? 0.5 : 1,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                    }}
-                  >
-                    {checkoutLoading ? (
-                      "Processing..."
-                    ) : (
-                      <>
-                        <FaApple size={20} />
-                        Apple Pay
-                      </>
-                    )}
-                  </button>
-                  <button
-                    onClick={handleCheckout}
-                    disabled={!customerName || checkoutLoading}
-                    style={{
-                      width: "100%",
-                      padding: "14px",
-                      background: "#ffffff",
-                      color: "#000000",
-                      border: "1px solid #e5e7eb",
-                      borderRadius: 8,
-                      fontSize: 16,
-                      fontWeight: 600,
-                      cursor: !customerName || checkoutLoading ? "not-allowed" : "pointer",
-                      opacity: !customerName || checkoutLoading ? 0.5 : 1,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                    }}
-                  >
-                    {checkoutLoading ? (
-                      "Processing..."
-                    ) : (
-                      <>
-                        <FaGoogle size={18} />
-                        Google Pay
-                      </>
-                    )}
-                  </button>
-                  <button
-                    onClick={handleCheckout}
-                    disabled={!customerName || checkoutLoading}
-                    style={{
-                      width: "100%",
-                      padding: "14px",
-                      background: "#3b82f6",
-                      color: "#ffffff",
-                      border: "none",
-                      borderRadius: 8,
-                      fontSize: 16,
-                      fontWeight: 600,
-                      cursor: !customerName || checkoutLoading ? "not-allowed" : "pointer",
-                      opacity: !customerName || checkoutLoading ? 0.5 : 1,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                    }}
-                  >
-                    {checkoutLoading ? (
-                      "Processing..."
-                    ) : (
-                      <>
-                        <FaCreditCard size={18} />
-                        Pay with Card
-                      </>
-                    )}
-                  </button>
-                </div>
+
+                {!showCardPayment ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                    <button
+                      onClick={handleCheckout}
+                      disabled={!customerName || checkoutLoading}
+                      style={{
+                        width: "100%",
+                        padding: "14px",
+                        background: "#000000",
+                        color: "#ffffff",
+                        border: "none",
+                        borderRadius: 8,
+                        fontSize: 16,
+                        fontWeight: 600,
+                        cursor: !customerName || checkoutLoading ? "not-allowed" : "pointer",
+                        opacity: !customerName || checkoutLoading ? 0.5 : 1,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8,
+                      }}
+                    >
+                      {checkoutLoading ? (
+                        "Processing..."
+                      ) : (
+                        <>
+                          <FaApple size={20} />
+                          Apple Pay
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={handleCheckout}
+                      disabled={!customerName || checkoutLoading}
+                      style={{
+                        width: "100%",
+                        padding: "14px",
+                        background: "#ffffff",
+                        color: "#000000",
+                        border: "1px solid #e5e7eb",
+                        borderRadius: 8,
+                        fontSize: 16,
+                        fontWeight: 600,
+                        cursor: !customerName || checkoutLoading ? "not-allowed" : "pointer",
+                        opacity: !customerName || checkoutLoading ? 0.5 : 1,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8,
+                      }}
+                    >
+                      {checkoutLoading ? (
+                        "Processing..."
+                      ) : (
+                        <>
+                          <FaGoogle size={18} />
+                          Google Pay
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (customerName) {
+                          setShowCardPayment(true);
+                        }
+                      }}
+                      disabled={!customerName}
+                      style={{
+                        width: "100%",
+                        padding: "14px",
+                        background: "#3b82f6",
+                        color: "#ffffff",
+                        border: "none",
+                        borderRadius: 8,
+                        fontSize: 16,
+                        fontWeight: 600,
+                        cursor: !customerName ? "not-allowed" : "pointer",
+                        opacity: !customerName ? 0.5 : 1,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8,
+                      }}
+                    >
+                      <FaCreditCard size={18} />
+                      Pay with Card
+                    </button>
+                  </div>
+                ) : (
+                  <Elements stripe={stripePromise}>
+                    <CardPaymentForm
+                      amount={cart.getTotal()}
+                      currency={menuData?.currency || "USD"}
+                      customerName={customerName}
+                      customerEmail={customerEmail}
+                      merchantName={menuData?.merchant_name || ""}
+                      orderType={cart.orderType}
+                      onSuccess={() => {
+                        cart.clearCart();
+                        setShowCheckoutForm(false);
+                        setShowCardPayment(false);
+                        alert("Payment successful!");
+                      }}
+                      onError={(error) => {
+                        alert(error);
+                      }}
+                    />
+                    <button
+                      onClick={() => setShowCardPayment(false)}
+                      style={{
+                        width: "100%",
+                        padding: "12px",
+                        background: "transparent",
+                        color: "#6b7280",
+                        border: "none",
+                        fontSize: 14,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        marginTop: 8,
+                      }}
+                    >
+                      ← Back to payment methods
+                    </button>
+                  </Elements>
+                )}
               </div>
             </div>
           </div>
