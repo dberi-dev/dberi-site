@@ -979,24 +979,17 @@ export default function MenuPage() {
             style={{
               position: "fixed",
               inset: 0,
-              background: "rgba(0,0,0,0.5)",
+              background: "#ffffff",
               zIndex: 50,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: 16,
               overflowY: "auto",
             }}
           >
             <div
               style={{
-                background: "#ffffff",
-                borderRadius: 16,
-                padding: 24,
-                maxWidth: 450,
-                width: "100%",
-                maxHeight: "90vh",
-                overflowY: "auto",
+                minHeight: "100vh",
+                padding: "20px 24px 24px",
+                maxWidth: 600,
+                margin: "0 auto",
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
@@ -1101,7 +1094,16 @@ export default function MenuPage() {
                       gap: 8,
                     }}
                   >
-                    {checkoutLoading ? "Processing..." : " Pay"}
+                    {checkoutLoading ? (
+                      "Processing..."
+                    ) : (
+                      <>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        Apple Pay
+                      </>
+                    )}
                   </button>
                   <button
                     onClick={handleCheckout}
@@ -1123,7 +1125,17 @@ export default function MenuPage() {
                       gap: 8,
                     }}
                   >
-                    {checkoutLoading ? "Processing..." : "G Pay"}
+                    {checkoutLoading ? (
+                      "Processing..."
+                    ) : (
+                      <>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="#4285F4"/>
+                          <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5c1.66 0 3.13-.81 4.04-2.05l-1.63-1.22c-.59.81-1.54 1.35-2.41 1.35-1.66 0-3-1.34-3-3s1.34-3 3-3c.87 0 1.82.54 2.41 1.35l1.63-1.22C15.13 7.81 13.66 7 12 7z" fill="#fff"/>
+                        </svg>
+                        Google Pay
+                      </>
+                    )}
                   </button>
                   <button
                     onClick={handleCheckout}
@@ -1139,9 +1151,23 @@ export default function MenuPage() {
                       fontWeight: 600,
                       cursor: !customerName || checkoutLoading ? "not-allowed" : "pointer",
                       opacity: !customerName || checkoutLoading ? 0.5 : 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
                     }}
                   >
-                    {checkoutLoading ? "Processing..." : "Pay with Card"}
+                    {checkoutLoading ? (
+                      "Processing..."
+                    ) : (
+                      <>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="2" y="5" width="20" height="14" rx="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          <line x1="2" y1="10" x2="22" y2="10" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        Pay with Card
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
