@@ -42,6 +42,14 @@ function CardPaymentForm({
 
     try {
       // Create Payment Intent
+      console.log("Creating payment intent with:", {
+        amount,
+        currency,
+        customerName,
+        merchantName,
+        orderType
+      });
+
       const response = await fetch("/api/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -57,6 +65,7 @@ function CardPaymentForm({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: "Failed to create payment" }));
+        console.error("Payment intent error:", errorData);
         throw new Error(errorData.error || "Failed to create payment");
       }
 
