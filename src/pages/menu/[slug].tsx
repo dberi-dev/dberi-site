@@ -343,7 +343,7 @@ export default function MenuPage() {
         </div>
 
         {/* Main Content */}
-        <div style={{ flex: 1, display: "flex", position: "relative", paddingBottom: cart.items.length > 0 ? 80 : 0 }}>
+        <div style={{ flex: 1, display: "flex", position: "relative", paddingBottom: cart.items.length > 0 ? 100 : 0 }}>
           {/* Sidebar */}
           <div
             style={{
@@ -577,9 +577,9 @@ export default function MenuPage() {
             onClick={() => setShowCart(true)}
             style={{
               position: "fixed",
-              bottom: 0,
-              left: 0,
-              right: 0,
+              bottom: 16,
+              left: 16,
+              right: 16,
               background: "#10b981",
               color: "#ffffff",
               padding: "14px 16px",
@@ -587,8 +587,9 @@ export default function MenuPage() {
               alignItems: "center",
               justifyContent: "space-between",
               cursor: "pointer",
-              boxShadow: "0 -2px 10px rgba(0,0,0,0.1)",
+              boxShadow: "0 4px 12px rgba(16, 185, 129, 0.4)",
               zIndex: 30,
+              borderRadius: 16,
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
