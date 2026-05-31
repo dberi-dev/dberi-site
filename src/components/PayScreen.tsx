@@ -1,4 +1,5 @@
 import React, { useState, type CSSProperties } from "react";
+import { FaCheckCircle } from "react-icons/fa";
 
 // ─────────────────────────────────────────────────────────────
 // Types
@@ -361,25 +362,10 @@ function SuccessBlock({ merchant, amount, symbol, onReset }: SuccessBlockProps) 
     >
       <div
         style={{
-          width: 80,
-          height: 80,
-          borderRadius: 40,
-          background: "#4ade80",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: "0 10px 30px rgba(74,222,128,0.4)",
+          filter: "drop-shadow(0 10px 30px rgba(74,222,128,0.4))",
         }}
       >
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M5 13l4 4L19 7"
-            stroke="#fff"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <FaCheckCircle size={80} color="#4ade80" />
       </div>
       <div style={{ fontSize: 20, fontWeight: 600, letterSpacing: -0.3 }}>
         Payment Sent

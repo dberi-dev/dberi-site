@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import { useCart } from "../../hooks/useCart";
-import { FaApple, FaGoogle, FaCreditCard } from "react-icons/fa";
+import { FaApple, FaGoogle, FaCreditCard, FaCheckCircle } from "react-icons/fa";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
@@ -1451,25 +1451,10 @@ export default function MenuPage() {
               {/* Success Icon */}
               <div
                 style={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: 40,
-                  background: "#10b981",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
                   marginBottom: 24,
                 }}
               >
-                <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M5 13l4 4L19 7"
-                    stroke="#fff"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <FaCheckCircle size={80} color="#10b981" />
               </div>
 
               <h2 style={{ fontSize: 24, fontWeight: 700, color: "#111827", marginBottom: 8, textAlign: "center" }}>
