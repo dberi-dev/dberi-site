@@ -142,7 +142,7 @@ export default async function handler(
 
         // Create charge in backend
         try {
-          const response = await fetch(`https://api.dberi.com/v1/merchants/${merchantId}/charges`, {
+          const response = await fetch(`https://api.dberi.com/v2/merchants/${merchantId}/charges`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
