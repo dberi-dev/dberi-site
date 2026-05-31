@@ -249,7 +249,7 @@ export default function MenuPage() {
 
     const fetchMenu = async () => {
       try {
-        const response = await fetch(`https://api.dberi.com/v2/public/menu/${slug}`);
+        const response = await fetch(`https://api.dberi.com/v1/public/menu/${slug}`);
         if (!response.ok) {
           throw new Error("Menu not found");
         }
