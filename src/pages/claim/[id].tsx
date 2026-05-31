@@ -30,7 +30,7 @@ export default function ClaimPage() {
 
     const fetchClaim = async () => {
       try {
-        const response = await fetch(`https://api.dberi.com/v1/claims/${id}`);
+        const response = await fetch(`https://api.dberi.com/v2/claims/${id}`);
         if (!response.ok) {
           throw new Error("Claim not found");
         }

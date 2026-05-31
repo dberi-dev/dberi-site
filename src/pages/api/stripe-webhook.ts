@@ -71,7 +71,7 @@ export default async function handler(
         console.log("Creating pending merchant account:", merchantData);
 
         try {
-          const response = await fetch("https://api.dberi.com/v1/merchants/create-from-stripe", {
+          const response = await fetch("https://api.dberi.com/v2/merchants/create-from-stripe", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

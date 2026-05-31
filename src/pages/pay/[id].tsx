@@ -98,7 +98,7 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
 
       try {
         // Process payment with the payment method from Apple/Google Pay
-        const response = await fetch(`https://api.dberi.com/v1/payment-links/${paymentLink.id}/pay-web`, {
+        const response = await fetch(`https://api.dberi.com/v2/payment-links/${paymentLink.id}/pay-web`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ function CheckoutForm({ paymentLink, onSuccess }: { paymentLink: PaymentLink; on
       }
 
       // Call your backend to process the payment
-      const response = await fetch(`https://api.dberi.com/v1/payment-links/${paymentLink.id}/pay-web`, {
+      const response = await fetch(`https://api.dberi.com/v2/payment-links/${paymentLink.id}/pay-web`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -482,7 +482,7 @@ export default function PaymentLinkPage() {
     const fetchPaymentLink = async () => {
       try {
         console.log('Fetching payment link:', id);
-        const response = await fetch(`https://api.dberi.com/v1/payment-links/${id}`);
+        const response = await fetch(`https://api.dberi.com/v2/payment-links/${id}`);
         if (!response.ok) {
           throw new Error("Payment link not found");
         }
