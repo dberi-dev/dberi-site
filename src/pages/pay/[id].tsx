@@ -4,6 +4,7 @@ import Head from "next/head";
 import { loadStripe, PaymentRequest, PaymentRequestPaymentMethodEvent } from "@stripe/stripe-js";
 import { Elements, CardElement, PaymentRequestButtonElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { PayScreen } from "../../components/PayScreen";
+import { FaCheckCircle } from "react-icons/fa";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
@@ -717,7 +718,9 @@ export default function PaymentLinkPage() {
               textAlign: "center",
             }}
           >
-            <div style={{ fontSize: 64, marginBottom: 24 }}>✅</div>
+            <div style={{ marginBottom: 24 }}>
+              <FaCheckCircle size={64} color="#10b981" />
+            </div>
             <p
               style={{
                 fontSize: 14,
