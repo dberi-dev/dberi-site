@@ -1458,6 +1458,8 @@ export default function MenuPage() {
               <div
                 style={{
                   marginBottom: 24,
+                  display: "flex",
+                  justifyContent: "center",
                 }}
               >
                 <FaCheckCircle size={80} color="#10b981" />
