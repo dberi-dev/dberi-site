@@ -120,6 +120,56 @@ export default async function handler(
         break;
       }
 
+      case "payment_intent.succeeded": {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+
+        console.log("Payment succeeded:", {
+          payment_intent_id: paymentIntent.id,
+          amount: paymentIntent.amount,
+          currency: paymentIntent.currency,
+          metadata: paymentIntent.metadata,
+        });
+
+        // Extract merchant info from metadata
+        const merchantId = paymentIntent.metadata.merchantId;
+        const merchantName = paymentIntent.metadata.merchantName || "Unknown Merchant";
+        const customerName = paymentIntent.metadata.customerName || "Guest";
+
+        if (!merchantId) {
+          console.error("No merchant ID in payment intent metadata");
+          break;
+        }
+
+        // Create charge in backend
+        try {
+          const response = await fetch(`https://api.dberi.com/v1/merchants/${merchantId}/charges`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${process.env.DBERI_API_KEY}`,
+            },
+            body: JSON.stringify({
+              merchant_id: merchantId,
+              amount: paymentIntent.amount,
+              description: `Payment from ${customerName}`,
+              customer_user_id: null, // Can be added if customer auth is implemented
+            }),
+          });
+
+          if (!response.ok) {
+            const error = await response.text();
+            console.error("Failed to create charge:", error);
+          } else {
+            const result = await response.json();
+            console.log("Charge created successfully:", result);
+          }
+        } catch (error) {
+          console.error("Error calling backend API to create charge:", error);
+        }
+
+        break;
+      }
+
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }

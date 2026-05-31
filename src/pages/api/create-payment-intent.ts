@@ -13,7 +13,7 @@ export default async function handler(
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { amount, currency, customerName, customerEmail, merchantName, orderType } = req.body;
+  const { amount, currency, customerName, customerEmail, merchantId, merchantName, orderType } = req.body;
 
   console.log("Payment Intent Request:", { amount, currency, customerName, merchantName, orderType });
 
@@ -45,6 +45,7 @@ export default async function handler(
     currency: currency.toLowerCase(),
     payment_method_types: ["card"],
     metadata: {
+      merchantId: merchantId || "",
       merchantName: merchantName || "Unknown Merchant",
       orderType: orderType?.type || "unknown",
       tableNumber: orderType?.tableNumber || "",

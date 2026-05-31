@@ -13,6 +13,7 @@ function CardPaymentForm({
   currency,
   customerName,
   customerEmail,
+  merchantId,
   merchantName,
   orderType,
   onSuccess,
@@ -22,6 +23,7 @@ function CardPaymentForm({
   currency: string;
   customerName: string;
   customerEmail: string;
+  merchantId: string;
   merchantName: string;
   orderType: any;
   onSuccess: () => void;
@@ -46,6 +48,7 @@ function CardPaymentForm({
         amount,
         currency,
         customerName,
+        merchantId,
         merchantName,
         orderType
       });
@@ -58,6 +61,7 @@ function CardPaymentForm({
           currency,
           customerName,
           customerEmail,
+          merchantId,
           merchantName,
           orderType,
         }),
@@ -160,6 +164,7 @@ interface MenuItem {
 }
 
 interface MenuData {
+  merchant_id: string;
   merchant_name: string;
   merchant_slug: string;
   currency: string;
@@ -1381,6 +1386,7 @@ export default function MenuPage() {
                       currency={menuData?.currency || "USD"}
                       customerName={customerName}
                       customerEmail={customerEmail}
+                      merchantId={menuData?.merchant_id || ""}
                       merchantName={menuData?.merchant_name || ""}
                       orderType={cart.orderType}
                       onSuccess={() => {
