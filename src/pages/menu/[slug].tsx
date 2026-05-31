@@ -213,6 +213,15 @@ export default function MenuPage() {
   const [showCardPayment, setShowCardPayment] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
+  const [showReceipt, setShowReceipt] = useState(false);
+  const [receiptData, setReceiptData] = useState<{
+    items: typeof cart.items;
+    total: number;
+    currency: string;
+    customerName: string;
+    orderType: typeof cart.orderType;
+    merchantName: string;
+  } | null>(null);
   const categoryRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
   const cart = useCart(
@@ -1375,10 +1384,19 @@ export default function MenuPage() {
                       merchantName={menuData?.merchant_name || ""}
                       orderType={cart.orderType}
                       onSuccess={() => {
+                        // Store receipt data before clearing cart
+                        setReceiptData({
+                          items: [...cart.items],
+                          total: getCartTotal(),
+                          currency: menuData?.currency || "USD",
+                          customerName,
+                          orderType: cart.orderType,
+                          merchantName: menuData?.merchant_name || "",
+                        });
                         cart.clearCart();
                         setShowCheckoutForm(false);
                         setShowCardPayment(false);
-                        alert("Payment successful!");
+                        setShowReceipt(true);
                       }}
                       onError={(error) => {
                         alert(error);
@@ -1403,6 +1421,138 @@ export default function MenuPage() {
                   </Elements>
                 )}
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Receipt Screen */}
+        {showReceipt && receiptData && (
+          <div
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "#ffffff",
+              zIndex: 50,
+              overflowY: "auto",
+            }}
+          >
+            <div
+              style={{
+                minHeight: "100vh",
+                padding: "20px 24px calc(24px + env(safe-area-inset-bottom))",
+                maxWidth: 600,
+                margin: "0 auto",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {/* Success Icon */}
+              <div
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: 40,
+                  background: "#10b981",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 24,
+                }}
+              >
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M5 13l4 4L19 7"
+                    stroke="#fff"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+
+              <h2 style={{ fontSize: 24, fontWeight: 700, color: "#111827", marginBottom: 8, textAlign: "center" }}>
+                Payment Successful!
+              </h2>
+              <p style={{ fontSize: 14, color: "#6b7280", marginBottom: 32, textAlign: "center" }}>
+                Thank you for your order, {receiptData.customerName}
+              </p>
+
+              {/* Order Details */}
+              <div style={{ width: "100%", background: "#f9fafb", borderRadius: 12, padding: 20, marginBottom: 24 }}>
+                <div style={{ fontSize: 16, fontWeight: 600, color: "#111827", marginBottom: 16 }}>Order Details</div>
+
+                {/* Items */}
+                {receiptData.items.map((item) => (
+                  <div key={item.id} style={{ display: "flex", justifyContent: "space-between", marginBottom: 12, fontSize: 14 }}>
+                    <span style={{ color: "#6b7280" }}>
+                      {item.quantity}x {item.name}
+                    </span>
+                    <span style={{ color: "#111827", fontWeight: 600 }}>
+                      {formatPrice(item.price * item.quantity, receiptData.currency)}
+                    </span>
+                  </div>
+                ))}
+
+                {/* Total */}
+                <div style={{ borderTop: "2px solid #e5e7eb", paddingTop: 12, marginTop: 12, display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: 18, fontWeight: 700, color: "#111827" }}>Total Paid</span>
+                  <span style={{ fontSize: 20, fontWeight: 700, color: "#10b981" }}>
+                    {formatPrice(receiptData.total, receiptData.currency)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Order Info */}
+              <div style={{ width: "100%", marginBottom: 32 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, fontSize: 14 }}>
+                  <span style={{ color: "#6b7280" }}>Merchant</span>
+                  <span style={{ color: "#111827", fontWeight: 600 }}>{receiptData.merchantName}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, fontSize: 14 }}>
+                  <span style={{ color: "#6b7280" }}>Order Type</span>
+                  <span style={{ color: "#111827", fontWeight: 600, textTransform: "capitalize" }}>
+                    {receiptData.orderType?.type}
+                    {receiptData.orderType?.tableNumber && ` - Table ${receiptData.orderType.tableNumber}`}
+                  </span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14 }}>
+                  <span style={{ color: "#6b7280" }}>Date</span>
+                  <span style={{ color: "#111827", fontWeight: 600 }}>
+                    {new Date().toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit"
+                    })}
+                  </span>
+                </div>
+              </div>
+
+              {/* Done Button */}
+              <button
+                onClick={() => {
+                  setShowReceipt(false);
+                  setReceiptData(null);
+                  setCustomerName("");
+                  setCustomerEmail("");
+                }}
+                style={{
+                  width: "100%",
+                  padding: "14px",
+                  background: "#3b82f6",
+                  color: "#ffffff",
+                  border: "none",
+                  borderRadius: 8,
+                  fontSize: 16,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Done
+              </button>
             </div>
           </div>
         )}
