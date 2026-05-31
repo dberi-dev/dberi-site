@@ -50,6 +50,8 @@ export default async function handler(
       orderType: orderType?.type || "unknown",
       tableNumber: orderType?.tableNumber || "",
       customerName: customerName || "",
+      customerEmail: customerEmail || "",
+      currency: currency.toLowerCase(),
     },
   };
 
